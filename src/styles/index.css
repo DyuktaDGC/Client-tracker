@@ -8,8 +8,8 @@
   --color-surface: #ffffff;
   --color-line: #e2e7ef;
   --color-ink: #12203a;
-  --color-ink-soft: #55647e;
-  --color-ink-faint: #8b98ad;
+  --color-ink-soft: #12203a;
+  --color-ink-faint: #12203a;
 
   --color-brand: #ef7f1f;
   --color-brand-dark: #d96b0e;
@@ -204,11 +204,6 @@
 
   .is-capturing [data-report-hide] {
     visibility: hidden;
-  }
-
-  .is-capturing #report-root {
-    max-width: 1648px;
-    margin-inline: auto;
   }
 
   .skeleton {

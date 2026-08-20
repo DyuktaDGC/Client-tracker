@@ -8,6 +8,7 @@ import { reportFileName } from '../../lib/report'
 import { PerformanceChart } from '../../components/dashboard/PerformanceChart'
 import { ScoreHeadlineCard } from '../../components/dashboard/ScoreHeadlineCard'
 import { SpotlightCard } from '../../components/dashboard/SpotlightCard'
+import { TotalsCard } from '../../components/dashboard/TotalsCard'
 import { FrameworkTable } from './FrameworkTable'
 import { PerformerList } from './PerformerList'
 import { TrainingActivityTable } from './TrainingActivityTable'
@@ -42,17 +43,21 @@ export function DashboardPage() {
 
   const summary = useMemo(() => programSummary(scoped, month), [scoped, month])
 
+  const frameworkAll = useMemo(() => frameworkRollup(scoped, month), [scoped, month])
+  const trainingAll = useMemo(() => activityRollup(scoped, month), [scoped, month])
+  const dashboardAll = useMemo(() => metaRollup(scoped, month), [scoped, month])
+
   const frameworkRows = useMemo(
-    () => frameworkRollup(scoped, month).filter((row) => matchesQuery(filters.q, row.code, row.name)),
-    [scoped, month, filters.q],
+    () => frameworkAll.filter((row) => matchesQuery(filters.q, row.code, row.name)),
+    [frameworkAll, filters.q],
   )
   const trainingRows = useMemo(
-    () => activityRollup(scoped, month).filter((row) => matchesQuery(filters.q, row.code, row.name)),
-    [scoped, month, filters.q],
+    () => trainingAll.filter((row) => matchesQuery(filters.q, row.code, row.name)),
+    [trainingAll, filters.q],
   )
   const dashboardRows = useMemo(
-    () => metaRollup(scoped, month).filter((row) => matchesQuery(filters.q, row.code, row.name)),
-    [scoped, month, filters.q],
+    () => dashboardAll.filter((row) => matchesQuery(filters.q, row.code, row.name)),
+    [dashboardAll, filters.q],
   )
 
   const activities = useMemo(
@@ -170,6 +175,16 @@ export function DashboardPage() {
         ) : null}
       </div>
 
+      {showComparisons ? (
+        <TotalsCard
+          stats={[
+            { label: 'Total clients', value: summary.clientCount, icon: 'user' },
+            { label: 'Total frameworks', value: frameworkAll.length, icon: 'layers' },
+            { label: 'Trainings & meetings', value: trainingAll.length, icon: 'calendar' },
+          ]}
+        />
+      ) : null}
+
       <div className="space-y-3">
         <PageHeading title="Framework breakdown" />
 
@@ -193,7 +208,7 @@ export function DashboardPage() {
       </div>
 
       {showComparisons ? (
-        <div className="grid items-start gap-4 xl:grid-cols-4">
+        <div className="grid gap-4 xl:grid-cols-3">
           <SectionCard
             className="xl:col-span-2 [animation-delay:120ms]"
             title="Training activity"
@@ -203,25 +218,27 @@ export function DashboardPage() {
             <TrainingActivityTable rows={activities} />
           </SectionCard>
 
-          <SectionCard
-            className="[animation-delay:180ms]"
-            title="Top performers"
-            subtitle="Highest overall score"
-            icon="trophy"
-            tone="good"
-          >
-            <PerformerList performers={top} variant="top" emptyTitle="No scores yet" />
-          </SectionCard>
+          <div className="flex flex-col gap-4">
+            <SectionCard
+              className="flex-1 [animation-delay:180ms]"
+              title="Top performers"
+              subtitle="Highest overall score"
+              icon="trophy"
+              tone="good"
+            >
+              <PerformerList performers={top} variant="top" emptyTitle="No scores yet" />
+            </SectionCard>
 
-          <SectionCard
-            className="[animation-delay:240ms]"
-            title="Needs improvement"
-            subtitle="Lowest overall score"
-            icon="alert"
-            tone="bad"
-          >
-            <PerformerList performers={bottom} variant="bottom" emptyTitle="No scores yet" />
-          </SectionCard>
+            <SectionCard
+              className="flex-1 [animation-delay:240ms]"
+              title="Needs improvement"
+              subtitle="Lowest overall score"
+              icon="alert"
+              tone="bad"
+            >
+              <PerformerList performers={bottom} variant="bottom" emptyTitle="No scores yet" />
+            </SectionCard>
+          </div>
         </div>
       ) : null}
 
