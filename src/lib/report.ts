@@ -97,21 +97,6 @@ export async function captureReport(node: HTMLElement | null, fileName: string) 
     throw new ReportError('The dashboard is still loading, so there is nothing to capture yet.')
   }
 
-  const width = Math.ceil(Math.max(node.scrollWidth, node.offsetWidth))
-  const height = Math.ceil(Math.max(node.scrollHeight, node.offsetHeight))
-
-  if (width < 1 || height < 1) {
-    throw new ReportError('The dashboard is not visible on screen, so it cannot be captured.')
-  }
-
-  const longestEdge = Math.max(width, height)
-
-  if (longestEdge > MAX_EDGE_PX) {
-    throw new ReportError('This page is too tall to export. Filter to a single client or chakra and try again.')
-  }
-
-  const pixelRatio = Math.max(1, Math.min(TARGET_SCALE, MAX_EDGE_PX / longestEdge))
-
   const root = document.documentElement
   root.classList.add(CAPTURE_CLASS)
 
@@ -119,11 +104,25 @@ export async function captureReport(node: HTMLElement | null, fileName: string) 
 
   try {
     await nextPaint()
+
+    const width = Math.ceil(node.offsetWidth)
+    const height = Math.ceil(Math.max(node.scrollHeight, node.offsetHeight))
+
+    if (width < 1 || height < 1) {
+      throw new ReportError('The dashboard is not visible on screen, so it cannot be captured.')
+    }
+
+    const longestEdge = Math.max(width, height)
+
+    if (longestEdge > MAX_EDGE_PX) {
+      throw new ReportError('This page is too tall to export. Filter to a single client or chakra and try again.')
+    }
+
     blob = await withTimeout(
       toBlob(node, {
         width,
         height,
-        pixelRatio,
+        pixelRatio: Math.max(1, Math.min(TARGET_SCALE, MAX_EDGE_PX / longestEdge)),
         skipFonts: true,
         backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff',
       }),

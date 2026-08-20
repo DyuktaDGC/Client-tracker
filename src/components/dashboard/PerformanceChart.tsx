@@ -36,25 +36,19 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
           ))}
 
           <ol className="absolute inset-y-0 left-12 right-2 flex items-end gap-3 sm:gap-4">
-            {points.map((point, index) => {
+            {points.map((point) => {
               const dimmed = activeMonth !== null && activeMonth !== point.month
               const height = point.percent === null ? 0 : Math.max(point.percent, 1.5)
-              // Bars grow out of the baseline one after another.
-              const delay = `${index * 55}ms`
 
               return (
                 <li key={point.month} className="group relative h-full flex-1">
                   <div
                     title={`${point.label} — ${formatPercent(point.percent)} (${formatScore(point.scored)}/${formatScore(point.possible)})`}
                     className={cn(
-                      'animate-grow-y absolute inset-x-0 bottom-0 origin-bottom rounded-t-md',
-                      'transition-[height,background-color] duration-500 ease-soft group-hover:brightness-110',
+                      'absolute inset-x-0 bottom-0 origin-bottom rounded-t-md group-hover:brightness-110',
                       point.percent === null ? 'bg-line/70' : dimmed ? 'bg-brand/35' : 'bg-brand',
                     )}
-                    style={{
-                      height: point.percent === null ? '2px' : `${height}%`,
-                      animationDelay: delay,
-                    }}
+                    style={{ height: point.percent === null ? '2px' : `${height}%` }}
                   >
                     <span className="sr-only">
                       {point.label}: {formatPercent(point.percent)} ({formatScore(point.scored)} of{' '}
@@ -65,11 +59,10 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
                   {point.percent === null ? null : (
                     <p
                       className={cn(
-                        'animate-fade absolute inset-x-0 text-center text-[11px] font-black tabular-nums',
-                        'transition-[bottom,color] duration-500 ease-soft',
+                        'absolute inset-x-0 text-center text-[11px] font-black tabular-nums',
                         dimmed ? 'text-ink-faint' : 'text-ink',
                       )}
-                      style={{ bottom: `calc(${height}% + 0.4rem)`, animationDelay: `calc(${delay} + 350ms)` }}
+                      style={{ bottom: `calc(${height}% + 0.4rem)` }}
                     >
                       {formatPercent(point.percent)}
                     </p>

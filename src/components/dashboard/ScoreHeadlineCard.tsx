@@ -1,5 +1,4 @@
 import type { Grade } from '../../domain/scoring'
-import { useCountUp } from '../../hooks/useCountUp'
 import { cn } from '../../lib/cn'
 import { formatPercent } from '../../lib/format'
 import { Meter } from '../ui/Meter'
@@ -38,7 +37,6 @@ interface ScoreHeadlineCardProps {
 
 export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: ScoreHeadlineCardProps) {
   const tone = grade ? GRADE_TONE[grade] : NEUTRAL
-  const counted = useCountUp(percent)
 
   return (
     <section className={cn('card card-lift animate-rise flex h-full flex-col p-5', tone.card)}>
@@ -58,7 +56,7 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
       </div>
 
       <p className={cn('mt-4 mb-auto flex items-baseline gap-2', tone.value)}>
-        <span className="text-5xl font-black tracking-tight tabular-nums sm:text-6xl">{formatPercent(counted)}</span>
+        <span className="text-5xl font-black tracking-tight tabular-nums sm:text-6xl">{formatPercent(percent)}</span>
         {grade ? (
           <span key={grade} className="animate-pop text-3xl font-black sm:text-4xl">
             {grade}

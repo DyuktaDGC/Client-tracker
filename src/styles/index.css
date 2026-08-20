@@ -206,6 +206,11 @@
     visibility: hidden;
   }
 
+  .is-capturing #report-root {
+    max-width: 1648px;
+    margin-inline: auto;
+  }
+
   .skeleton {
     @apply relative overflow-hidden rounded-lg;
     background-color: --alpha(var(--color-line) / 60%);
