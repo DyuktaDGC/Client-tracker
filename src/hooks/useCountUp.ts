@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
+const STALL_TIMEOUT = 250
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia(REDUCED_MOTION).matches
@@ -28,7 +29,15 @@ export function useCountUp(target: number | null, duration = 850) {
     const startedAt = performance.now()
     let frame = 0
 
+    const stalled = window.setTimeout(() => {
+      cancelAnimationFrame(frame)
+      fromRef.current = target
+      setFrameValue(target)
+    }, STALL_TIMEOUT)
+
     const tick = (now: number) => {
+      window.clearTimeout(stalled)
+
       const progress = Math.min(1, (now - startedAt) / duration)
       const current = progress < 1 ? from + delta * easeOut(progress) : target
 
@@ -39,7 +48,11 @@ export function useCountUp(target: number | null, duration = 850) {
     }
 
     frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
+
+    return () => {
+      window.clearTimeout(stalled)
+      cancelAnimationFrame(frame)
+    }
   }, [target, duration, reduced])
 
   if (target === null || !Number.isFinite(target)) return target

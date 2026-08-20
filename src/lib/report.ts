@@ -7,7 +7,7 @@ const MAX_EDGE_PX = 16384
 const OBJECT_URL_TTL = 60_000
 const PAINT_TIMEOUT = 150
 const TARGET_SCALE = 2
-const CAPTURE_TIMEOUT = 45_000
+const CAPTURE_TIMEOUT = 60_000
 
 export class ReportError extends Error {
   constructor(message: string, options?: { cause?: unknown }) {

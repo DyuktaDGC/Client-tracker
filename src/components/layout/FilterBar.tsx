@@ -9,7 +9,7 @@ interface FilterBarProps {
 
 export function FilterBar({ children, actions, onClear }: FilterBarProps) {
   return (
-    <section className="card animate-rise flex flex-wrap items-center gap-2 p-3 sm:gap-3 sm:p-4" aria-label="Filters">
+    <section className="card animate-rise relative z-10 flex flex-wrap items-center gap-2 p-3 sm:gap-3 sm:p-4" aria-label="Filters">
       {children}
 
       {actions || onClear ? (
