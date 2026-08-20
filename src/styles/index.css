@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --color-canvas: #f3f5f9;
+  --color-surface: #ffffff;
+  --color-line: #e2e7ef;
+  --color-ink: #12203a;
+  --color-ink-soft: #55647e;
+  --color-ink-faint: #8b98ad;
+
+  --color-brand: #ef7f1f;
+  --color-brand-dark: #d96b0e;
+  --color-brand-soft: #fff3e3;
+
+  --color-highlight: #fdf4d4;
+  --color-highlight-line: #f3e2a8;
+
+  --color-good: #04724d;
+  --color-good-soft: #d8f5e6;
+  --color-amber: #dd9a10;
+  --color-warn: #9a5b00;
+  --color-warn-soft: #fdf0cd;
+  --color-bad: #c4241a;
+  --color-bad-soft: #fde3e1;
+  --color-info: #17458f;
+  --color-info-soft: #e2ecff;
+
+  --radius-card: 1rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-line rounded-2xl;
+  }
+
+  .label {
+    @apply text-[11px] font-bold uppercase tracking-[0.09em] text-ink-soft;
+  }
+
+  .pill {
+    @apply inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-semibold text-ink;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
