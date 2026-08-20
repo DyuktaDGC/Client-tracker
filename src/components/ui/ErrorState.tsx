@@ -14,8 +14,11 @@ const describe = (error: unknown) => {
 
 export function ErrorState({ error, onRetry }: ErrorStateProps) {
   return (
-    <div className="card flex flex-col items-center gap-3 border-bad/25 bg-bad-soft/40 px-6 py-12 text-center" role="alert">
-      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-bad-soft text-bad">
+    <div
+      className="card animate-pop flex flex-col items-center gap-3 border-bad/25 bg-bad-soft/40 px-6 py-12 text-center"
+      role="alert"
+    >
+      <span className="animate-pop flex h-11 w-11 items-center justify-center rounded-xl bg-bad-soft text-bad [animation-delay:90ms]">
         <Icon name="alert" size={20} />
       </span>
       <h3 className="text-base font-bold">Could not load the data</h3>
@@ -24,7 +27,7 @@ export function ErrorState({ error, onRetry }: ErrorStateProps) {
         <button
           type="button"
           onClick={onRetry}
-          className="rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ink/90"
+          className="press rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ink/90"
         >
           Try again
         </button>

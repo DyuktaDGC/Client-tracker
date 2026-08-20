@@ -14,14 +14,14 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
 
   if (plotted.length === 0) {
     return (
-      <section className="card p-6">
+      <section className="card animate-rise p-6">
         <p className="text-sm text-ink-soft">No chakra has been scored for this selection yet.</p>
       </section>
     )
   }
 
   return (
-    <section className="card p-6 sm:p-7">
+    <section className="card animate-rise p-6 sm:p-7">
       <div className="pt-7">
         <div className="relative h-56">
           {GRID.map((line) => (
@@ -36,19 +36,25 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
           ))}
 
           <ol className="absolute inset-y-0 left-12 right-2 flex items-end gap-3 sm:gap-4">
-            {points.map((point) => {
+            {points.map((point, index) => {
               const dimmed = activeMonth !== null && activeMonth !== point.month
               const height = point.percent === null ? 0 : Math.max(point.percent, 1.5)
+              // Bars grow out of the baseline one after another.
+              const delay = `${index * 55}ms`
 
               return (
-                <li key={point.month} className="relative h-full flex-1">
+                <li key={point.month} className="group relative h-full flex-1">
                   <div
                     title={`${point.label} — ${formatPercent(point.percent)} (${formatScore(point.scored)}/${formatScore(point.possible)})`}
                     className={cn(
-                      'absolute inset-x-0 bottom-0 rounded-t-md transition-colors',
+                      'animate-grow-y absolute inset-x-0 bottom-0 origin-bottom rounded-t-md',
+                      'transition-[height,background-color] duration-500 ease-soft group-hover:brightness-110',
                       point.percent === null ? 'bg-line/70' : dimmed ? 'bg-brand/35' : 'bg-brand',
                     )}
-                    style={{ height: point.percent === null ? '2px' : `${height}%` }}
+                    style={{
+                      height: point.percent === null ? '2px' : `${height}%`,
+                      animationDelay: delay,
+                    }}
                   >
                     <span className="sr-only">
                       {point.label}: {formatPercent(point.percent)} ({formatScore(point.scored)} of{' '}
@@ -59,10 +65,11 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
                   {point.percent === null ? null : (
                     <p
                       className={cn(
-                        'absolute inset-x-0 text-center text-[11px] font-black tabular-nums',
+                        'animate-fade absolute inset-x-0 text-center text-[11px] font-black tabular-nums',
+                        'transition-[bottom,color] duration-500 ease-soft',
                         dimmed ? 'text-ink-faint' : 'text-ink',
                       )}
-                      style={{ bottom: `calc(${height}% + 0.4rem)` }}
+                      style={{ bottom: `calc(${height}% + 0.4rem)`, animationDelay: `calc(${delay} + 350ms)` }}
                     >
                       {formatPercent(point.percent)}
                     </p>
@@ -79,7 +86,7 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
               key={point.month}
               title={point.label}
               className={cn(
-                'flex-1 truncate text-center text-[11px] font-bold uppercase tracking-[0.06em]',
+                'flex-1 truncate text-center text-[11px] font-bold uppercase tracking-[0.06em] transition-colors duration-300',
                 activeMonth === point.month ? 'text-brand-dark' : 'text-ink-soft',
               )}
             >

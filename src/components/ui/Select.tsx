@@ -123,7 +123,7 @@ export function Select({ label, value, options, onChange, icon, disabled }: Sele
         aria-expanded={open}
         aria-labelledby={`${id}-label ${id}-value`}
         className={cn(
-          'pill w-full justify-between pr-2.5 transition-colors',
+          'pill press w-full justify-between pr-2.5',
           'hover:border-brand/45 hover:bg-brand-soft/45',
           open && 'border-brand bg-brand-soft/60 ring-2 ring-brand/25',
           disabled && 'cursor-not-allowed text-ink-faint',
@@ -149,7 +149,7 @@ export function Select({ label, value, options, onChange, icon, disabled }: Sele
           tabIndex={-1}
           aria-labelledby={`${id}-label`}
           aria-activedescendant={`${id}-option-${activeIndex}`}
-          className="absolute left-0 z-50 mt-2 max-h-72 w-max min-w-full max-w-[min(30rem,calc(100vw-3rem))] overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface p-1.5 shadow-[0_18px_40px_-18px_rgba(18,32,58,0.45)]"
+          className="animate-drop absolute left-0 z-50 mt-2 max-h-72 w-max min-w-full max-w-[min(30rem,calc(100vw-3rem))] origin-top overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface p-1.5 shadow-[0_18px_40px_-18px_rgba(18,32,58,0.45)]"
         >
           {options.map((option, index) => {
             const isSelected = option.value === value
@@ -166,13 +166,15 @@ export function Select({ label, value, options, onChange, icon, disabled }: Sele
                   onMouseEnter={() => setActiveIndex(index)}
                   onClick={() => commit(index)}
                   className={cn(
-                    'flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left text-[13px] font-semibold uppercase leading-snug tracking-[0.02em] transition-colors',
+                    'flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left text-[13px] font-semibold uppercase leading-snug tracking-[0.02em] transition-colors duration-150',
                     isSelected ? 'text-brand-dark' : 'text-ink',
                     isActive ? 'bg-brand-soft' : 'bg-transparent',
                   )}
                 >
                   <span className="min-w-0 flex-1">{option.label}</span>
-                  {isSelected ? <Icon name="check" size={14} className="mt-0.5 shrink-0 text-brand-dark" /> : null}
+                  {isSelected ? (
+                    <Icon name="check" size={14} className="animate-pop mt-0.5 shrink-0 text-brand-dark" />
+                  ) : null}
                 </button>
               </li>
             )

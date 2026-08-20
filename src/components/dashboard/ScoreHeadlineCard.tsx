@@ -1,4 +1,5 @@
 import type { Grade } from '../../domain/scoring'
+import { useCountUp } from '../../hooks/useCountUp'
 import { cn } from '../../lib/cn'
 import { formatPercent } from '../../lib/format'
 import { Meter } from '../ui/Meter'
@@ -37,14 +38,19 @@ interface ScoreHeadlineCardProps {
 
 export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: ScoreHeadlineCardProps) {
   const tone = grade ? GRADE_TONE[grade] : NEUTRAL
+  const counted = useCountUp(percent)
 
   return (
-    <section className={cn('card flex h-full flex-col p-5', tone.card)}>
+    <section className={cn('card card-lift animate-rise flex h-full flex-col p-5', tone.card)}>
       <div className="flex items-start justify-between gap-3">
         <h2 className="label">{title}</h2>
         {grade ? (
           <span
-            className={cn('rounded-lg border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.06em]', tone.chip)}
+            key={grade}
+            className={cn(
+              'animate-pop rounded-lg border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.06em]',
+              tone.chip,
+            )}
           >
             Grade {grade}
           </span>
@@ -52,8 +58,12 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
       </div>
 
       <p className={cn('mt-4 mb-auto flex items-baseline gap-2', tone.value)}>
-        <span className="text-5xl font-black tracking-tight sm:text-6xl">{formatPercent(percent)}</span>
-        {grade ? <span className="text-3xl font-black sm:text-4xl">{grade}</span> : null}
+        <span className="text-5xl font-black tracking-tight tabular-nums sm:text-6xl">{formatPercent(counted)}</span>
+        {grade ? (
+          <span key={grade} className="animate-pop text-3xl font-black sm:text-4xl">
+            {grade}
+          </span>
+        ) : null}
       </p>
 
       <Meter percent={percent} label={title} className="mt-5 bg-surface/60" />

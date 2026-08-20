@@ -12,8 +12,11 @@ export function SearchInput({ value, onChange, placeholder = 'Search…', label 
   const id = useId()
 
   return (
-    <div className="pill w-full min-w-[12rem] flex-1">
-      <Icon name="search" className="text-ink-faint" />
+    <div className="pill group w-full min-w-[12rem] flex-1 transition-colors duration-200 focus-within:border-brand/45 focus-within:bg-brand-soft/30">
+      <Icon
+        name="search"
+        className="shrink-0 text-ink-faint transition-colors duration-200 group-focus-within:text-brand-dark"
+      />
       <label htmlFor={id} className="sr-only">
         {label}
       </label>

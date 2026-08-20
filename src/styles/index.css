@@ -29,6 +29,90 @@
   --color-info-soft: #e2ecff;
 
   --radius-card: 1rem;
+
+  /* Motion ------------------------------------------------------------- */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+  --animate-rise: rise 0.5s var(--ease-soft) both;
+  --animate-fade: fade 0.4s var(--ease-soft) both;
+  --animate-pop: pop 0.4s var(--ease-spring) both;
+  --animate-grow-x: grow-x 0.75s var(--ease-soft) both;
+  --animate-grow-y: grow-y 0.65s var(--ease-soft) both;
+  --animate-drop: drop 0.16s var(--ease-soft) both;
+}
+
+/* Keyframes live outside @theme so component classes can reference them too. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes spin-once {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @layer base {
@@ -58,6 +142,83 @@
   .pill {
     @apply inline-flex h-11 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-semibold text-ink;
   }
+
+  /* Hover lift for cards. Uses the `translate` property so it never fights
+     the `transform` used by entrance keyframes. */
+  .card-lift {
+    transition:
+      translate 0.3s var(--ease-soft),
+      box-shadow 0.3s var(--ease-soft),
+      border-color 0.3s var(--ease-soft),
+      background-color 0.3s var(--ease-soft),
+      color 0.3s var(--ease-soft);
+  }
+
+  .card-lift:hover {
+    translate: 0 -3px;
+    box-shadow: 0 18px 34px -22px rgb(18 32 58 / 0.5);
+  }
+
+  /* Tactile feedback for anything clickable. */
+  .press {
+    transition:
+      scale 0.18s var(--ease-soft),
+      background-color 0.18s var(--ease-soft),
+      color 0.18s var(--ease-soft),
+      border-color 0.18s var(--ease-soft);
+  }
+
+  .press:active {
+    scale: 0.96;
+  }
+
+  /* Entrance stagger for short lists (first 8 children). */
+  .stagger > * {
+    animation: rise 0.5s var(--ease-soft) both;
+  }
+
+  .stagger > *:nth-child(1) {
+    animation-delay: 40ms;
+  }
+  .stagger > *:nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .stagger > *:nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .stagger > *:nth-child(4) {
+    animation-delay: 190ms;
+  }
+  .stagger > *:nth-child(5) {
+    animation-delay: 240ms;
+  }
+  .stagger > *:nth-child(6) {
+    animation-delay: 290ms;
+  }
+  .stagger > *:nth-child(7) {
+    animation-delay: 340ms;
+  }
+  .stagger > *:nth-child(8) {
+    animation-delay: 390ms;
+  }
+
+  .is-capturing [data-report-hide] {
+    visibility: hidden;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-lg;
+    background-color: --alpha(var(--color-line) / 60%);
+  }
+
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    translate: -100% 0;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+    animation: shimmer 1.5s var(--ease-soft) infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -65,6 +226,16 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .card-lift:hover {
+    translate: none;
+  }
+
+  .press:active {
+    scale: none;
   }
 }

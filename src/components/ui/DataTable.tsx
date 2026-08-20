@@ -41,7 +41,7 @@ export function DataTable<T>({
   if (filled.length === 0) return <>{empty}</>
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card animate-rise overflow-hidden">
       <div className="overflow-auto" style={{ maxHeight }}>
         <table className="w-full table-fixed border-collapse text-sm" style={{ minWidth }}>
           <thead className="sticky top-0 z-10 bg-surface">
@@ -68,14 +68,19 @@ export function DataTable<T>({
                 <tr
                   key={rowKey(row)}
                   className={cn(
-                    'border-b border-line transition-colors last:border-0 hover:bg-canvas/70',
+                    'border-b border-line transition-colors duration-200 last:border-0 hover:bg-brand-soft/45',
+                    'hover:[&>td:first-child]:shadow-[inset_3px_0_0_0_var(--color-brand)]',
                     rowClassName?.(row),
                   )}
                 >
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className={cn('px-4 py-3 align-middle', alignOf(column.align), column.className)}
+                      className={cn(
+                        'px-4 py-3 align-middle transition-shadow duration-200',
+                        alignOf(column.align),
+                        column.className,
+                      )}
                     >
                       {column.render(row)}
                     </td>

@@ -16,6 +16,7 @@ type IconName =
   | 'trophy'
   | 'chevron'
   | 'check'
+  | 'download'
 
 const PATHS: Record<IconName, string> = {
   trend: 'M3 17l6-6 4 4 8-8M21 7h-5m5 0v5',
@@ -33,6 +34,7 @@ const PATHS: Record<IconName, string> = {
   trophy: 'M8 21h8m-4-4v4m7-17H5v4a7 7 0 0 0 14 0V4zM5 6H3a3 3 0 0 0 3 3m13-3h2a3 3 0 0 1-3 3',
   chevron: 'M6 9l6 6 6-6',
   check: 'M20 6L9 17l-5-5',
+  download: 'M12 3v12m0 0l4-4m-4 4l-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2',
 }
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {

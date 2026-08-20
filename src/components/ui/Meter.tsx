@@ -27,8 +27,13 @@ export function Meter({ percent, label, className }: MeterProps) {
       aria-valuemax={100}
       aria-label={label}
     >
+      {/* `animate-grow-x` sweeps the fill in on mount; the width transition
+          takes over for later filter changes. */}
       <div
-        className={cn('h-full rounded-full transition-[width] duration-500', FILL[bandOf(percent)])}
+        className={cn(
+          'h-full origin-left rounded-full transition-[width] duration-500 ease-soft animate-grow-x',
+          FILL[bandOf(percent)],
+        )}
         style={{ width: `${width}%` }}
       />
     </div>

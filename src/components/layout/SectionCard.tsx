@@ -19,9 +19,14 @@ const TONES = {
 
 export function SectionCard({ title, subtitle, icon, tone = 'brand', className, children }: SectionCardProps) {
   return (
-    <section className={cn('card flex min-w-0 flex-col gap-4 p-4 sm:p-5', className)}>
+    <section className={cn('card card-lift animate-rise group flex min-w-0 flex-col gap-4 p-4 sm:p-5', className)}>
       <header className="flex items-center gap-3">
-        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${TONES[tone]}`}>
+        <span
+          className={cn(
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-transform duration-300 ease-spring group-hover:scale-110',
+            TONES[tone],
+          )}
+        >
           <Icon name={icon} size={17} />
         </span>
         <div>

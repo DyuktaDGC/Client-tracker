@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router-dom'
+import { REPORT_ROOT_ID } from '../../lib/report'
 import { ErrorBoundary } from './ErrorBoundary'
 import { TopBar } from './TopBar'
 
 export function AppShell() {
   return (
-    <div className="min-h-dvh">
+    <div id={REPORT_ROOT_ID} className="min-h-dvh bg-canvas">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-white"

@@ -27,12 +27,26 @@ export function SpotlightCard({ eyebrow, name, grade, period, stats }: Spotlight
   const tone = grade ? GRADE_TONE[grade] : NEUTRAL
 
   return (
-    <section className={cn('card relative flex h-full flex-col overflow-hidden p-5 text-white', tone.card)}>
-      <Icon name="user" size={96} className="pointer-events-none absolute -right-4 top-2 opacity-15" />
+    <section
+      className={cn(
+        'card card-lift animate-rise group relative flex h-full flex-col overflow-hidden p-5 text-white [animation-delay:80ms]',
+        tone.card,
+      )}
+    >
+      <Icon
+        name="user"
+        size={96}
+        className="pointer-events-none absolute -right-4 top-2 opacity-15 transition-all duration-500 ease-soft group-hover:-right-2 group-hover:opacity-25"
+      />
       <p className="text-[11px] font-bold uppercase tracking-[0.09em] opacity-90">{eyebrow}</p>
-      <h2 className="mt-1 text-2xl font-black uppercase leading-tight tracking-tight text-balance sm:text-3xl">{name}</h2>
+      <h2
+        key={name}
+        className="animate-fade mt-1 text-2xl font-black uppercase leading-tight tracking-tight text-balance sm:text-3xl"
+      >
+        {name}
+      </h2>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="stagger mt-3 flex flex-wrap items-center gap-2">
         {grade ? (
           <span className={cn('rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.07em]', tone.chip)}>
             Grade {grade}
@@ -46,11 +60,19 @@ export function SpotlightCard({ eyebrow, name, grade, period, stats }: Spotlight
         ) : null}
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-2 pt-1">
+      <dl className="stagger mt-4 grid grid-cols-2 gap-2 pt-1">
         {stats.map((stat) => (
-          <div key={stat.label} className={cn('rounded-xl px-3 py-3', tone.tile)}>
+          <div
+            key={stat.label}
+            className={cn(
+              'rounded-xl px-3 py-3 transition-transform duration-300 ease-soft hover:-translate-y-0.5',
+              tone.tile,
+            )}
+          >
             <dt className="text-[10px] font-bold uppercase tracking-[0.08em] opacity-85">{stat.label}</dt>
-            <dd className="mt-1 text-lg font-black">{stat.value}</dd>
+            <dd key={stat.value} className="animate-fade mt-1 text-lg font-black tabular-nums">
+              {stat.value}
+            </dd>
           </div>
         ))}
       </dl>

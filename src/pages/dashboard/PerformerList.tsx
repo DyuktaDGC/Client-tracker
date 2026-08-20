@@ -14,12 +14,16 @@ export function PerformerList({ performers, variant, emptyTitle }: PerformerList
   if (performers.length === 0) return <EmptyState title={emptyTitle} description="No client has a score yet." />
 
   return (
-    <ol className="space-y-4">
+    <ol className="stagger space-y-4">
       {performers.map((performer, index) => (
-        <li key={performer.id} className="flex items-start gap-3">
+        <li
+          key={performer.id}
+          className="group flex items-start gap-3 transition-transform duration-300 ease-soft hover:translate-x-1"
+        >
           <span
             className={cn(
               'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-black text-white',
+              'transition-transform duration-300 ease-spring group-hover:scale-110',
               variant === 'top' ? 'bg-brand' : 'bg-bad',
             )}
           >

@@ -12,7 +12,13 @@ export function ScoreChip({ value }: { value: number | null }) {
         : 'bg-bad-soft text-bad border-bad/20'
 
   return (
-    <span className={cn('inline-flex min-w-[3rem] justify-center rounded-lg border px-2 py-1 font-bold tabular-nums', tone)}>
+    <span
+      className={cn(
+        'inline-flex min-w-[3rem] justify-center rounded-lg border px-2 py-1 font-bold tabular-nums',
+        'transition-transform duration-200 ease-spring hover:scale-105',
+        tone,
+      )}
+    >
       {value === null ? '—' : formatScore(value)}
     </span>
   )

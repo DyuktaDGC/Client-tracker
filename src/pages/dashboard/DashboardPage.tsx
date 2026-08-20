@@ -4,6 +4,7 @@ import { activityMatrix,activityRollup, chakraOptions, frameworkRollup,framework
 import { useFilterParams } from '../../hooks/useFilterParams'
 import { formatPercent } from '../../lib/format'
 import { chakraPeriod } from '../../lib/period'
+import { reportFileName } from '../../lib/report'
 import { PerformanceChart } from '../../components/dashboard/PerformanceChart'
 import { ScoreHeadlineCard } from '../../components/dashboard/ScoreHeadlineCard'
 import { SpotlightCard } from '../../components/dashboard/SpotlightCard'
@@ -13,6 +14,7 @@ import { TrainingActivityTable } from './TrainingActivityTable'
 import { FilterBar } from '../../components/layout/FilterBar'
 import { PageHeading } from '../../components/layout/PageHeading'
 import { SectionCard } from '../../components/layout/SectionCard'
+import { DownloadReportButton } from '../../components/ui/DownloadReportButton'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ErrorState } from '../../components/ui/ErrorState'
 import { SearchInput } from '../../components/ui/SearchInput'
@@ -67,7 +69,7 @@ export function DashboardPage() {
 
   if (isPending) {
     return (
-      <>
+      <div className="stagger space-y-5">
         <Skeleton className="h-[4.75rem] w-full rounded-2xl" />
         <div className="grid gap-4 lg:grid-cols-2">
           <Skeleton className="h-56 w-full rounded-2xl" />
@@ -75,7 +77,7 @@ export function DashboardPage() {
         </div>
         <Skeleton className="h-80 w-full rounded-2xl" />
         <Skeleton className="h-72 w-full rounded-2xl" />
-      </>
+      </div>
     )
   }
 
@@ -95,6 +97,12 @@ export function DashboardPage() {
   const period = chakraPeriod(spotlight?.startDate, month, data.schema.length)
   const showComparisons = filters.client === 'all'
   const view = VIEWS.includes(filters.view as BreakdownView) ? (filters.view as BreakdownView) : 'all'
+  const selectedClient = allClients.find((client) => client.id === filters.client)
+  const reportFile = reportFileName([
+    selectedClient?.name ?? 'all clients',
+    chakraName ?? 'all chakras',
+    summary.grade ? `grade ${summary.grade}` : 'ungraded',
+  ])
 
   const sections =
     view === 'frameworks'
@@ -111,7 +119,7 @@ export function DashboardPage() {
 
   return (
     <>
-      <FilterBar onClear={isDirty ? clear : undefined}>
+      <FilterBar actions={<DownloadReportButton fileName={reportFile} />} onClear={isDirty ? clear : undefined}>
         <Select
           label="Chakra"
           icon="layers"
@@ -187,7 +195,7 @@ export function DashboardPage() {
       {showComparisons ? (
         <div className="grid items-start gap-4 xl:grid-cols-4">
           <SectionCard
-            className="xl:col-span-2"
+            className="xl:col-span-2 [animation-delay:120ms]"
             title="Training activity"
             subtitle="Operation · Sales · Marketing · Strategic"
             icon="calendar"
@@ -195,11 +203,23 @@ export function DashboardPage() {
             <TrainingActivityTable rows={activities} />
           </SectionCard>
 
-          <SectionCard title="Top performers" subtitle="Highest overall score" icon="trophy" tone="good">
+          <SectionCard
+            className="[animation-delay:180ms]"
+            title="Top performers"
+            subtitle="Highest overall score"
+            icon="trophy"
+            tone="good"
+          >
             <PerformerList performers={top} variant="top" emptyTitle="No scores yet" />
           </SectionCard>
 
-          <SectionCard title="Needs improvement" subtitle="Lowest overall score" icon="alert" tone="bad">
+          <SectionCard
+            className="[animation-delay:240ms]"
+            title="Needs improvement"
+            subtitle="Lowest overall score"
+            icon="alert"
+            tone="bad"
+          >
             <PerformerList performers={bottom} variant="bottom" emptyTitle="No scores yet" />
           </SectionCard>
         </div>
