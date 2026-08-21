@@ -2,7 +2,6 @@ import { toBlob } from 'html-to-image'
 
 export const REPORT_ROOT_ID = 'report-root'
 
-const CAPTURE_CLASS = 'is-capturing'
 const MAX_EDGE_PX = 16384
 const OBJECT_URL_TTL = 60_000
 const PAINT_TIMEOUT = 150
@@ -44,6 +43,14 @@ const withTimeout = <T>(work: Promise<T>, message: string) =>
       },
     )
   })
+
+/**
+ * Keeps live controls (the download button itself) out of the captured clone.
+ * html-to-image skips the whole subtree of a rejected node, so testing the node
+ * itself is enough — and far cheaper than walking ancestors for every node.
+ */
+const keepInReport = (node: HTMLElement) =>
+  typeof node.hasAttribute !== 'function' || !node.hasAttribute('data-report-hide')
 
 const pad = (value: number) => String(value).padStart(2, '0')
 
@@ -97,9 +104,6 @@ export async function captureReport(node: HTMLElement | null, fileName: string) 
     throw new ReportError('The dashboard is still loading, so there is nothing to capture yet.')
   }
 
-  const root = document.documentElement
-  root.classList.add(CAPTURE_CLASS)
-
   let blob: Blob | null
 
   try {
@@ -119,6 +123,7 @@ export async function captureReport(node: HTMLElement | null, fileName: string) 
       toBlob(node, {
         pixelRatio: Math.max(1, Math.min(TARGET_SCALE, MAX_EDGE_PX / longestEdge)),
         skipFonts: true,
+        filter: keepInReport,
         backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff',
       }),
       'Capturing the report took too long. Narrow the filters and try again.',
@@ -126,8 +131,6 @@ export async function captureReport(node: HTMLElement | null, fileName: string) 
   } catch (cause) {
     if (cause instanceof ReportError) throw cause
     throw new ReportError('The dashboard could not be rendered to an image.', { cause })
-  } finally {
-    root.classList.remove(CAPTURE_CLASS)
   }
 
   if (!blob || blob.size === 0) {

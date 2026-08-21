@@ -109,6 +109,15 @@
   }
 }
 
+@keyframes sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @keyframes spin-once {
   to {
     transform: rotate(360deg);
@@ -200,10 +209,6 @@
   }
   .stagger > *:nth-child(8) {
     animation-delay: 390ms;
-  }
-
-  .is-capturing [data-report-hide] {
-    visibility: hidden;
   }
 
   .skeleton {

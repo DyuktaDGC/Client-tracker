@@ -63,6 +63,8 @@ export function DownloadReportButton({ fileName, className }: DownloadReportButt
     }
   }, [fileName, settle])
 
+  const working = status === 'working'
+
   return (
     <div data-report-hide className={cn('flex min-w-0 items-center gap-2', className)}>
       {status === 'error' && message ? (
@@ -74,27 +76,46 @@ export function DownloadReportButton({ fileName, className }: DownloadReportButt
       <button
         type="button"
         onClick={() => void download()}
-        disabled={status === 'working'}
-        aria-busy={status === 'working'}
+        disabled={working}
+        aria-busy={working}
+        aria-live="polite"
         title={message || `Save the whole page as ${fileName}`}
         className={cn(
-          'press group inline-flex h-11 shrink-0 items-center gap-1.5 rounded-xl border px-3 text-xs font-bold uppercase tracking-[0.06em]',
+          'press group relative isolate inline-flex h-11 w-[12.5rem] shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border px-3 text-xs font-bold uppercase tracking-[0.06em] transition-colors duration-300',
           status === 'error'
             ? 'border-bad/40 bg-bad-soft text-bad'
             : status === 'done'
               ? 'border-good/40 bg-good-soft text-good'
-              : 'border-line text-ink-soft hover:border-brand/40 hover:bg-brand-soft hover:text-brand-dark',
-          status === 'working' && 'cursor-progress opacity-70',
+              : working
+                ? 'cursor-progress border-brand/40 bg-brand-soft text-brand-dark'
+                : 'border-line text-ink-soft hover:border-brand/40 hover:bg-brand-soft hover:text-brand-dark',
         )}
       >
-        <Icon
-          name={status === 'done' ? 'check' : status === 'error' ? 'alert' : 'download'}
-          size={14}
-          className={cn(
-            'transition-transform duration-300 ease-spring',
-            status === 'working' ? 'animate-pulse' : 'group-hover:translate-y-0.5',
+        {working ? (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-brand/20 to-transparent [animation:sweep_1.15s_var(--ease-soft)_infinite]"
+          />
+        ) : null}
+
+        <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+          {working ? (
+            <span
+              aria-hidden="true"
+              className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current/25 border-t-current"
+            />
+          ) : (
+            <Icon
+              name={status === 'done' ? 'check' : status === 'error' ? 'alert' : 'download'}
+              size={14}
+              className={cn(
+                'transition-transform duration-300 ease-spring',
+                status === 'done' ? 'animate-pop' : 'group-hover:translate-y-0.5',
+              )}
+            />
           )}
-        />
+        </span>
+
         {LABELS[status]}
       </button>
     </div>
