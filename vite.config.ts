@@ -16,7 +16,8 @@ export default defineConfig(({ mode }) => {
               target,
               changeOrigin: true,
               secure: true,
-              rewrite: (path) => path.replace(/^\/api/, ''),
+              rewrite: (path) =>
+                path.replace(/^\/api\/assignments/, '/dgc/data?view=dashboard').replace(/^\/api/, ''),
               headers:
                 env.N8N_HEADER_NAME && env.N8N_HEADER_VALUE
                   ? { [env.N8N_HEADER_NAME]: env.N8N_HEADER_VALUE }

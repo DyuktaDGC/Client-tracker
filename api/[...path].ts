@@ -5,7 +5,11 @@ const ROUTES: Record<string, readonly string[]> = {
   clients: [],
   client: ['id'],
   health: [],
-  'dgc/data': ['view'],
+  assignments: [],
+}
+
+const UPSTREAM: Record<string, string> = {
+  assignments: 'dgc/data?view=dashboard',
 }
 
 const ID_PATTERN = /^[a-z0-9-]{1,120}$/
@@ -30,7 +34,7 @@ export default async function handler(request: Request): Promise<Response> {
   const allowedParams = ROUTES[route]
   if (!allowedParams) return fail(404, 'Unknown endpoint.')
 
-  const target = new URL(`${base}/${route}`)
+  const target = new URL(`${base}/${UPSTREAM[route] ?? route}`)
   for (const key of allowedParams) {
     const value = incoming.searchParams.get(key)
     if (value === null) continue
