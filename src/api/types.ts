@@ -6,6 +6,8 @@ export interface ApiWarning {
   tab?: string
   client?: string
   column?: string
+  framework?: string
+  question?: string
   row?: number
 }
 
@@ -82,3 +84,82 @@ export interface DashboardResponse {
   warningCounts: WarningCounts
 }
 
+
+export interface AssignmentQuestion {
+  qid: string
+  no: number
+  text: string
+  unit: 'count' | 'percent'
+  target: number | null
+  done: number | null
+  na: boolean
+  achievementPct: number | null
+}
+
+export interface AssignmentFramework {
+  code: string
+  name: string | null
+  order: number
+  questions: AssignmentQuestion[]
+  questionCount: number
+  targetsSet: number
+  doneSet: number
+  naCount: number
+  completionPct: number | null
+}
+
+export interface AssignmentBatch {
+  batchId: string
+  label: string
+  periodStart: string
+  periodEnd: string
+  tab: string
+  frameworks: AssignmentFramework[]
+  frameworkCount: number
+  questionCount: number
+  targetsSet: number
+  doneSet: number
+  naCount: number
+  frameworksStarted: number
+  targetFillPct: number | null
+  completionPct: number | null
+}
+
+export interface AssignmentClient {
+  id: string
+  name: string
+  batches: AssignmentBatch[]
+  batchCount: number
+  latestBatchId: string | null
+  frameworkCount: number
+  questionCount: number
+  targetsSet: number
+  doneSet: number
+  targetFillPct: number | null
+  completionPct: number | null
+  completionPctAllBatches: number | null
+}
+
+export interface AssignmentBatchMeta {
+  batchId: string
+  label: string
+  periodStart: string
+  periodEnd: string
+  tab: string
+  clientCount: number
+  frameworkCount: number
+  questionCount: number
+  frameworkCodes: string[]
+}
+
+export interface AssignmentsResponse {
+  syncedAt: string
+  clientCount: number
+  batchCount: number
+  frameworkCount: number
+  frameworkCodes: string[]
+  batches: AssignmentBatchMeta[]
+  clients: AssignmentClient[]
+  warnings: ApiWarning[]
+  warningCounts: WarningCounts
+}

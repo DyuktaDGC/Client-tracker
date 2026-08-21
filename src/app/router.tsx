@@ -7,6 +7,10 @@ export const router = createBrowserRouter([
     element: <AppShell />,
     children: [
       { index: true, lazy: async () => ({ Component: (await import('../pages/dashboard/DashboardPage')).DashboardPage }) },
+      {
+        path: 'assignments',
+        lazy: async () => ({ Component: (await import('../pages/assignments/AssignmentsPage')).AssignmentsPage }),
+      },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },

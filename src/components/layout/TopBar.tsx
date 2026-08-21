@@ -2,13 +2,14 @@ import { useSyncStatus } from '../../hooks/useSyncStatus'
 import { cn } from '../../lib/cn'
 import { formatDateTime } from '../../lib/format'
 import { Icon } from '../ui/Icon'
+import { ViewToggle } from './ViewToggle'
 
 export function TopBar() {
   const { syncedAt, isFetching, refresh } = useSyncStatus()
 
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <span className="group flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-brand transition-transform duration-300 ease-spring hover:scale-105">
           <Icon
             name="trend"
@@ -16,9 +17,11 @@ export function TopBar() {
             className="transition-transform duration-300 ease-spring group-hover:-translate-y-0.5"
           />
         </span>
-        <h1 className="min-w-0 truncate text-base font-extrabold uppercase tracking-[0.06em] sm:text-lg">
-          Client performance
+        <h1 className="hidden min-w-0 truncate text-base font-extrabold uppercase tracking-[0.06em] sm:block sm:text-lg">
+          DGC Tracker
         </h1>
+
+        <ViewToggle className="order-last w-full sm:order-none sm:mx-auto sm:w-auto" />
 
         <div
           className={cn(

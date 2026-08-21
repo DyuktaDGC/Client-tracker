@@ -1,7 +1,7 @@
-import { Icon } from '../ui/Icon'
+import { Icon, type IconName } from '../ui/Icon'
 
 interface TotalsCardProps {
-  stats: Array<{ label: string; value: number; icon: 'user' | 'layers' | 'calendar' }>
+  stats: Array<{ label: string; value: number | string; icon: IconName }>
 }
 
 export function TotalsCard({ stats }: TotalsCardProps) {

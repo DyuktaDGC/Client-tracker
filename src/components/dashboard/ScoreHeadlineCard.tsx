@@ -33,9 +33,10 @@ interface ScoreHeadlineCardProps {
   grade: Grade | null
   scored: number
   possible: number
+  unit?: string
 }
 
-export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: ScoreHeadlineCardProps) {
+export function ScoreHeadlineCard({ title, percent, grade, scored, possible, unit = 'points' }: ScoreHeadlineCardProps) {
   const tone = grade ? GRADE_TONE[grade] : NEUTRAL
 
   return (
@@ -75,7 +76,7 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
 
         <div className="mt-2 flex justify-between text-[11px] font-bold uppercase tracking-[0.06em] text-ink-soft">
           <span>
-            {scored} of {possible} points
+            {scored} of {possible} {unit}
           </span>
           <span>Target: 100%</span>
         </div>

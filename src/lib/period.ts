@@ -29,3 +29,13 @@ export function chakraPeriod(
   const to = addMonths(start, month === null ? totalMonths : month)
   return `${DAY_MONTH.format(from)} – ${DAY_MONTH_YEAR.format(to)}`
 }
+
+const MONTH_YEAR = new Intl.DateTimeFormat('en-GB', { month: 'short', year: 'numeric' })
+
+export function periodLabel(start: string, end: string): string {
+  const read = (value: string) => {
+    const match = /^(\d{4})-(\d{2})$/.exec(value)
+    return match ? MONTH_YEAR.format(new Date(Number(match[1]), Number(match[2]) - 1, 1)) : value
+  }
+  return `${read(start)} – ${read(end)}`
+}

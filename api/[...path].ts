@@ -5,6 +5,7 @@ const ROUTES: Record<string, readonly string[]> = {
   clients: [],
   client: ['id'],
   health: [],
+  'dgc/data': ['view'],
 }
 
 const ID_PATTERN = /^[a-z0-9-]{1,120}$/
@@ -33,7 +34,7 @@ export default async function handler(request: Request): Promise<Response> {
   for (const key of allowedParams) {
     const value = incoming.searchParams.get(key)
     if (value === null) continue
-    if (key === 'id' && !ID_PATTERN.test(value)) return fail(400, 'Invalid client id.')
+    if (!ID_PATTERN.test(value)) return fail(400, 'Invalid request parameter.')
     target.searchParams.set(key, value)
   }
 
