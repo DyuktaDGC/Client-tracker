@@ -21,8 +21,6 @@ export function TopBar() {
           DGC Tracker
         </h1>
 
-        <ViewToggle className="order-last w-full sm:order-none sm:mx-auto sm:w-auto" />
-
         <div
           className={cn(
             'ml-auto flex items-center gap-2 rounded-xl border px-3 py-2 transition-colors duration-300',
@@ -54,6 +52,10 @@ export function TopBar() {
               )}
             />
           </button>
+        </div>
+
+        <div className="order-last flex w-full justify-center sm:justify-end">
+          <ViewToggle className="w-full sm:w-auto" />
         </div>
       </div>
     </header>

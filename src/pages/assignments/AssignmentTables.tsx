@@ -1,18 +1,11 @@
-import type { FrameworkRow, ScopeRow } from '../../domain/assignments'
-import { formatPercent } from '../../lib/format'
+import type { ScopeRow } from '../../domain/assignments'
+import { cn } from '../../lib/cn'
 import { DataTable, type Column } from '../../components/ui/DataTable'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Meter } from '../../components/ui/Meter'
 
-const empty = (
-  <EmptyState
-    title="Nothing matches these filters"
-    description="Try another period, clear the search box, or switch back to all clients."
-  />
-)
-
-const counter = (part: number, whole: number) => (
-  <span className="whitespace-nowrap font-bold tabular-nums">
+const counter = (part: number, whole: number, tone?: string) => (
+  <span className={cn('whitespace-nowrap font-bold tabular-nums', tone)}>
     {part}
     <span className="text-ink/45">/{whole}</span>
   </span>
@@ -23,7 +16,7 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
     {
       key: 'client',
       header: 'Client',
-      className: 'w-[32%]',
+      className: 'w-[38%]',
       render: (row) => (
         <button
           type="button"
@@ -38,28 +31,21 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
       key: 'targets',
       header: 'Targets set',
       align: 'right',
-      className: 'w-[8rem]',
-      render: (row) => counter(row.batch.targetsSet, row.batch.questionCount),
+      className: 'w-[9rem]',
+      render: (row) => counter(row.batch.targetsSet, row.batch.questionCount, 'text-brand-dark'),
     },
     {
       key: 'done',
-      header: 'Completed',
+      header: 'Done',
       align: 'right',
-      className: 'w-[8rem]',
-      render: (row) => counter(row.batch.doneSet, row.batch.questionCount),
+      className: 'w-[9rem]',
+      render: (row) => counter(row.batch.doneSet, row.batch.questionCount, row.batch.doneSet > 0 ? 'text-good' : undefined),
     },
     {
       key: 'coverage',
-      header: 'Target coverage',
-      className: 'w-[18rem]',
-      render: (row) => <Meter percent={row.batch.targetFillPct} label={`${row.client.name} target coverage`} />,
-    },
-    {
-      key: 'completion',
-      header: 'Completion',
-      align: 'right',
-      className: 'w-[7rem]',
-      render: (row) => <span className="font-black tabular-nums">{formatPercent(row.batch.completionPct)}</span>,
+      header: 'Targets filled',
+      className: 'w-[20rem]',
+      render: (row) => <Meter percent={row.batch.targetFillPct} label={`${row.client.name} targets set`} />,
     },
   ]
 
@@ -68,58 +54,14 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
       columns={columns}
       sections={[{ key: 'clients', rows }]}
       rowKey={(row) => `${row.client.id}-${row.batch.batchId}`}
-      minWidth="48rem"
+      minWidth="44rem"
       maxHeight="38rem"
-      empty={empty}
-    />
-  )
-}
-
-const frameworkColumns: Column<FrameworkRow>[] = [
-  {
-    key: 'code',
-    header: 'Code',
-    align: 'center',
-    className: 'w-[5rem]',
-    render: (row) => <span className="font-bold text-brand-dark">{row.code}</span>,
-  },
-  {
-    key: 'name',
-    header: 'Framework',
-    className: 'w-[34%]',
-    render: (row) => <span className="text-ink-soft">{row.name}</span>,
-  },
-  {
-    key: 'targets',
-    header: 'Targets set',
-    align: 'right',
-    className: 'w-[8rem]',
-    render: (row) => counter(row.targetsSet, row.questionCount),
-  },
-  {
-    key: 'progress',
-    header: 'Completion',
-    className: 'w-[18rem]',
-    render: (row) => <Meter percent={row.completionPct} label={`${row.code} completion`} />,
-  },
-  {
-    key: 'percent',
-    header: '%',
-    align: 'right',
-    className: 'w-[6rem]',
-    render: (row) => <span className="font-black tabular-nums">{formatPercent(row.completionPct)}</span>,
-  },
-]
-
-export function FrameworkRollupTable({ rows }: { rows: FrameworkRow[] }) {
-  return (
-    <DataTable
-      columns={frameworkColumns}
-      sections={[{ key: 'frameworks', rows }]}
-      rowKey={(row) => row.code}
-      minWidth="46rem"
-      maxHeight="38rem"
-      empty={empty}
+      empty={
+        <EmptyState
+          title="Nothing matches these filters"
+          description="Try another period, clear the search box, or switch back to all clients."
+        />
+      }
     />
   )
 }

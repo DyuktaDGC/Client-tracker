@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAssignments } from '../../api/queries'
 import type { AssignmentsResponse } from '../../api/types'
-import { detailFrameworks, frameworkRollup, scopeRows, totalsOf } from '../../domain/assignments'
+import { detailFrameworks, scopeRows, totalsOf } from '../../domain/assignments'
 import { matchesQuery } from '../../domain/selectors'
 import { useFilterParams } from '../../hooks/useFilterParams'
 import { periodLabel } from '../../lib/period'
@@ -17,7 +17,7 @@ import { ErrorState } from '../../components/ui/ErrorState'
 import { SearchInput } from '../../components/ui/SearchInput'
 import { Select } from '../../components/ui/Select'
 import { Skeleton } from '../../components/ui/Skeleton'
-import { ClientTable, FrameworkRollupTable } from './AssignmentTables'
+import { ClientTable } from './AssignmentTables'
 import { FrameworkPanel } from './FrameworkPanel'
 
 const DEFAULTS = { batch: 'all', client: 'all', q: '' }
@@ -27,19 +27,12 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
 
   const rows = useMemo(() => scopeRows(data, filters.batch, filters.client), [data, filters.batch, filters.client])
   const totals = useMemo(() => totalsOf(rows), [rows])
-  const frameworks = useMemo(
-    () => frameworkRollup(rows).filter((row) => matchesQuery(filters.q, row.code, row.name)),
-    [rows, filters.q],
-  )
-  const clientRows = useMemo(
-    () => rows.filter((row) => matchesQuery(filters.q, row.client.name)),
-    [rows, filters.q],
-  )
+  const clientRows = useMemo(() => rows.filter((row) => matchesQuery(filters.q, row.client.name)), [rows, filters.q])
   const panels = useMemo(() => detailFrameworks(rows, filters.q), [rows, filters.q])
 
-  const grade = totals.doneSet > 0 ? totals.grade : null
   const client = filters.client === 'all' ? null : data.clients.find((entry) => entry.id === filters.client)
-  const batch = data.batches.find((entry) => entry.batchId === filters.batch) ?? (data.batchCount === 1 ? data.batches[0] : undefined)
+  const batch =
+    data.batches.find((entry) => entry.batchId === filters.batch) ?? (data.batchCount === 1 ? data.batches[0] : undefined)
 
   return (
     <>
@@ -80,41 +73,34 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
       <div className="grid gap-4 lg:grid-cols-2">
         <ScoreHeadlineCard
           title={batch?.label ?? 'All periods'}
-          percent={totals.completionPct}
-          grade={grade}
-          scored={totals.doneSet}
+          percent={totals.targetFillPct}
+          grade={null}
+          scored={totals.targetsSet}
           possible={totals.questionCount}
-          unit="questions done"
+          unit="targets set"
         />
         <SpotlightCard
           eyebrow={client ? 'Client focus' : 'Scope'}
           name={client?.name ?? `${totals.clientCount} clients`}
-          grade={grade}
+          grade={null}
           period={batch ? periodLabel(batch.periodStart, batch.periodEnd) : null}
         />
       </div>
 
       <TotalsCard
         stats={[
-          { label: 'Frameworks', value: totals.frameworkCount, icon: 'layers' },
-          { label: 'Targets set', value: `${totals.targetsSet}/${totals.questionCount}`, icon: 'bolt' },
-          { label: 'Completed', value: totals.doneSet, icon: 'check' },
+          { label: 'Targets set', value: `${totals.targetsSet}/${totals.questionCount}`, icon: 'bolt', tone: 'brand' },
+          { label: 'Done', value: `${totals.doneSet}/${totals.questionCount}`, icon: 'check', tone: 'good' },
         ]}
       />
-
-      {totals.doneSet === 0 && totals.targetsSet > 0 ? (
-        <p className="card animate-fade px-4 py-3 text-sm text-ink-soft">
-          Targets are set, nothing recorded as done yet — every meter fills as the completed columns are filled in.
-        </p>
-      ) : null}
 
       {client ? (
         <div className="space-y-3">
           <PageHeading title="Framework detail" icon="bolt" />
           {panels.length ? (
             <div className="grid gap-4 xl:grid-cols-2">
-              {panels.map((framework) => (
-                <FrameworkPanel key={`${framework.code}-${framework.order}`} framework={framework} />
+              {panels.map((framework, index) => (
+                <FrameworkPanel key={`${framework.code}-${framework.order}`} framework={framework} index={index} />
               ))}
             </div>
           ) : (
@@ -122,17 +108,10 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
           )}
         </div>
       ) : (
-        <>
-          <div className="space-y-3">
-            <PageHeading title="Client progress" icon="trend" />
-            <ClientTable rows={clientRows} onSelect={(id) => setFilter('client', id)} />
-          </div>
-
-          <div className="space-y-3">
-            <PageHeading title="Framework breakdown" />
-            <FrameworkRollupTable rows={frameworks} />
-          </div>
-        </>
+        <div className="space-y-3">
+          <PageHeading title="Client progress" icon="trend" />
+          <ClientTable rows={clientRows} onSelect={(id) => setFilter('client', id)} />
+        </div>
       )}
     </>
   )
