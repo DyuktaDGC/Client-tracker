@@ -3,24 +3,21 @@ import { cn } from '../../lib/cn'
 import { formatPercent } from '../../lib/format'
 import { Meter } from '../ui/Meter'
 
-const GRADE_TONE: Record<Grade, { card: string; value: string; chip: string; badge: string }> = {
+const GRADE_TONE: Record<Grade, { card: string; value: string; chip: string }> = {
   A: {
     card: 'border-good/25 bg-good-soft',
     value: 'text-good',
     chip: 'border-good/25 bg-surface/80 text-good',
-    badge: 'border-good/30 bg-surface/70 text-good',
   },
   B: {
     card: 'border-highlight-line bg-highlight',
     value: 'text-brand-dark',
     chip: 'border-brand/25 bg-surface/80 text-brand-dark',
-    badge: 'border-brand/30 bg-surface/70 text-brand-dark',
   },
   C: {
     card: 'border-bad/25 bg-bad-soft',
     value: 'text-bad',
     chip: 'border-bad/25 bg-surface/80 text-bad',
-    badge: 'border-bad/30 bg-surface/70 text-bad',
   },
 }
 
@@ -28,7 +25,6 @@ const NEUTRAL = {
   card: 'border-line bg-surface',
   value: 'text-ink-soft',
   chip: 'border-line bg-canvas text-ink-soft',
-  badge: 'border-line bg-surface text-ink-soft',
 }
 
 interface ScoreHeadlineCardProps {
@@ -66,16 +62,10 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
           ) : null}
         </div>
 
-        <div className={cn('my-auto flex items-center gap-4 py-3', tone.value)}>
+        <div className={cn('my-auto flex items-baseline gap-3 py-3', tone.value)}>
           <span className="text-5xl font-black tracking-tight tabular-nums sm:text-6xl">{formatPercent(percent)}</span>
           {grade ? (
-            <span
-              key={grade}
-              className={cn(
-                'animate-pop flex size-16 shrink-0 items-center justify-center rounded-2xl border text-4xl font-black leading-none sm:size-20 sm:text-5xl',
-                tone.badge,
-              )}
-            >
+            <span key={grade} className="animate-pop text-4xl font-black leading-none sm:text-5xl">
               {grade}
             </span>
           ) : null}
