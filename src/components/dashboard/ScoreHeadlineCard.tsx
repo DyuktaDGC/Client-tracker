@@ -46,7 +46,7 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
           <span
             key={grade}
             className={cn(
-              'animate-pop rounded-lg border px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.06em]',
+              'animate-pop rounded-lg border px-3 py-1.5 text-sm font-bold uppercase tracking-[0.06em]',
               tone.chip,
             )}
           >
@@ -58,7 +58,7 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible }: S
       <p className={cn('mt-4 mb-auto flex items-baseline gap-2', tone.value)}>
         <span className="text-5xl font-black tracking-tight tabular-nums sm:text-6xl">{formatPercent(percent)}</span>
         {grade ? (
-          <span key={grade} className="animate-pop text-3xl font-black sm:text-4xl">
+          <span key={grade} className="animate-pop text-4xl font-black sm:text-5xl">
             {grade}
           </span>
         ) : null}

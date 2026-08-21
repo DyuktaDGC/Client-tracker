@@ -1,35 +1,51 @@
-import type { Grade } from '../../domain/scoring'
-import { cn } from '../../lib/cn'
-import { Icon } from '../ui/Icon'
+import type { Grade } from "../../domain/scoring";
+import { cn } from "../../lib/cn";
+import { Icon } from "../ui/Icon";
 
-const GRADE_TONE: Record<Grade, { card: string; chip: string; tile: string }> = {
-  A: { card: 'border-good/40 bg-good', chip: 'bg-white/20', tile: 'bg-black/20' },
-  B: { card: 'border-brand-dark/30 bg-brand', chip: 'bg-white/20', tile: 'bg-brand-dark/45' },
-  C: { card: 'border-bad/40 bg-bad', chip: 'bg-white/20', tile: 'bg-black/20' },
-}
+const GRADE_TONE: Record<Grade, { card: string; chip: string; tile: string }> =
+  {
+    A: {
+      card: "border-good/40 bg-good",
+      chip: "bg-white/20",
+      tile: "bg-black/20",
+    },
+    B: {
+      card: "border-brand-dark/30 bg-brand",
+      chip: "bg-white/20",
+      tile: "bg-brand-dark/45",
+    },
+    C: {
+      card: "border-bad/40 bg-bad",
+      chip: "bg-white/20",
+      tile: "bg-black/20",
+    },
+  };
 
-const NEUTRAL = { card: 'border-brand-dark/30 bg-brand', chip: 'bg-white/20', tile: 'bg-brand-dark/45' }
-
-interface SpotlightStat {
-  label: string
-  value: string
-}
+const NEUTRAL = {
+  card: "border-brand-dark/30 bg-brand",
+  chip: "bg-white/20",
+  tile: "bg-brand-dark/45",
+};
 
 interface SpotlightCardProps {
-  eyebrow: string
-  name: string
-  grade: Grade | null
-  period?: string | null
-  stats: SpotlightStat[]
+  eyebrow: string;
+  name: string;
+  grade: Grade | null;
+  period?: string | null;
 }
 
-export function SpotlightCard({ eyebrow, name, grade, period, stats }: SpotlightCardProps) {
-  const tone = grade ? GRADE_TONE[grade] : NEUTRAL
+export function SpotlightCard({
+  eyebrow,
+  name,
+  grade,
+  period,
+}: SpotlightCardProps) {
+  const tone = grade ? GRADE_TONE[grade] : NEUTRAL;
 
   return (
     <section
       className={cn(
-        'card card-lift animate-rise group relative flex h-full flex-col overflow-hidden p-5 text-white [animation-delay:80ms]',
+        "card card-lift animate-rise group relative flex h-full flex-col overflow-hidden p-5 text-white [animation-delay:80ms]",
         tone.card,
       )}
     >
@@ -38,7 +54,9 @@ export function SpotlightCard({ eyebrow, name, grade, period, stats }: Spotlight
         size={96}
         className="pointer-events-none absolute -right-4 top-2 opacity-15 transition-all duration-500 ease-soft group-hover:-right-2 group-hover:opacity-25"
       />
-      <p className="text-[11px] font-bold uppercase tracking-[0.09em] opacity-90">{eyebrow}</p>
+      <p className="text-[11px] font-bold uppercase tracking-[0.09em] opacity-90">
+        {eyebrow}
+      </p>
       <h2
         key={name}
         className="animate-fade mt-1 text-2xl font-black uppercase leading-tight tracking-tight text-balance sm:text-3xl"
@@ -46,36 +64,40 @@ export function SpotlightCard({ eyebrow, name, grade, period, stats }: Spotlight
         {name}
       </h2>
 
-      <div className="stagger mt-3 flex flex-wrap items-center gap-2">
-        {grade ? (
-          <span className={cn('rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.07em]', tone.chip)}>
+      {grade ? (
+        <div className="stagger mt-3 flex flex-wrap items-center gap-2">
+          <span
+            className={cn(
+              "rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.07em]",
+              tone.chip,
+            )}
+          >
             Grade {grade}
           </span>
-        ) : null}
-        {period ? (
-          <span className={cn('inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-bold', tone.chip)}>
-            <Icon name="calendar" size={13} />
-            {period}
-          </span>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
-      <dl className="stagger mt-4 grid grid-cols-2 gap-2 pt-1">
-        {stats.map((stat) => (
+      {period ? (
+        <div className="stagger mt-auto pt-4">
           <div
-            key={stat.label}
             className={cn(
-              'rounded-xl px-3 py-3 transition-transform duration-300 ease-soft hover:-translate-y-0.5',
+              "rounded-xl px-4 py-3 transition-transform duration-300 ease-soft hover:-translate-y-0.5",
               tone.tile,
             )}
           >
-            <dt className="text-[10px] font-bold uppercase tracking-[0.08em] opacity-85">{stat.label}</dt>
-            <dd key={stat.value} className="animate-fade mt-1 text-lg font-black tabular-nums">
-              {stat.value}
-            </dd>
+            <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.08em] opacity-85">
+              <Icon name="calendar" size={12} />
+              Period
+            </p>
+            <p
+              key={period}
+              className="animate-fade mt-1 text-xl font-black tracking-tight tabular-nums sm:text-2xl"
+            >
+              {period}
+            </p>
           </div>
-        ))}
-      </dl>
+        </div>
+      ) : null}
     </section>
-  )
+  );
 }

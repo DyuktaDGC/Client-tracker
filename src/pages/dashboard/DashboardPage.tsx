@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 import { useDashboard } from '../../api/queries'
-import { activityMatrix,activityRollup, chakraOptions, frameworkRollup,frameworksEnteredIn,matchesQuery,metaRollup,performanceTrend, performers,programSummary, rankClients, summariseClient} from '../../domain/selectors'
+import { activityMatrix,activityRollup, chakraOptions, frameworkRollup,matchesQuery,metaRollup,performanceTrend, performers,programSummary, rankClients, summariseClient} from '../../domain/selectors'
 import { useFilterParams } from '../../hooks/useFilterParams'
-import { formatPercent } from '../../lib/format'
 import { chakraPeriod } from '../../lib/period'
 import { reportFileName } from '../../lib/report'
 import { PerformanceChart } from '../../components/dashboard/PerformanceChart'
@@ -167,10 +166,6 @@ export function DashboardPage() {
             name={spotlight.name}
             grade={spotlightSummary.grade}
             period={period}
-            stats={[
-              { label: 'Avg performance', value: formatPercent(spotlightSummary.percent) },
-              { label: 'Frameworks done', value: String(frameworksEnteredIn(spotlight, month)) },
-            ]}
           />
         ) : null}
       </div>
