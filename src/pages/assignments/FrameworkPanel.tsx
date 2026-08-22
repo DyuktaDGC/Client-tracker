@@ -58,18 +58,13 @@ export function FrameworkPanel({ framework, index }: { framework: AssignmentFram
               {question.no}
             </span>
             <p className="min-w-0 flex-1 text-sm leading-snug text-ink-soft">{question.text}</p>
-            <span
-              className={cn(
-                'w-14 rounded-lg px-2 py-1 text-right text-sm font-bold tabular-nums',
-                question.target === null ? '' : 'bg-surface',
-              )}
-            >
+            <span className="inline-flex h-7 w-14 shrink-0 items-center justify-end rounded-lg border border-line bg-surface px-2 text-sm font-bold tabular-nums">
               {read(question.target, question.unit)}
             </span>
             <span
               className={cn(
-                'w-14 rounded-lg px-2 py-1 text-right text-sm font-bold tabular-nums',
-                question.done === null ? '' : 'bg-good text-white',
+                'inline-flex h-7 w-14 shrink-0 items-center justify-end rounded-lg border px-2 text-sm font-bold tabular-nums',
+                question.done === null ? 'border-line bg-surface' : 'border-good bg-good text-white',
               )}
             >
               {read(question.done, question.unit)}

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAssignments } from '../../api/queries'
 import type { AssignmentsResponse } from '../../api/types'
-import { detailFrameworks, scopeRows, totalsOf } from '../../domain/assignments'
+import { detailFrameworks, frameworkOptions, scopeFramework, scopeRows, totalsOf } from '../../domain/assignments'
 import { matchesQuery } from '../../domain/selectors'
 import { useFilterParams } from '../../hooks/useFilterParams'
 import { periodLabel } from '../../lib/period'
@@ -19,38 +19,39 @@ import { Skeleton } from '../../components/ui/Skeleton'
 import { ClientTable } from './AssignmentTables'
 import { FrameworkPanel } from './FrameworkPanel'
 
-const DEFAULTS = { batch: 'all', client: 'all', q: '' }
+const DEFAULTS = { batch: 'all', client: 'all', framework: 'all', q: '' }
 
 function AssignmentsView({ data }: { data: AssignmentsResponse }) {
   const [filters, setFilter, { clear, isDirty }] = useFilterParams(DEFAULTS)
 
-  const rows = useMemo(() => scopeRows(data, filters.batch, filters.client), [data, filters.batch, filters.client])
+  const scoped = useMemo(() => scopeRows(data, filters.batch, filters.client), [data, filters.batch, filters.client])
+  const rows = useMemo(() => scopeFramework(scoped, filters.framework), [scoped, filters.framework])
+  const frameworks = useMemo(() => frameworkOptions(data), [data])
   const totals = useMemo(() => totalsOf(rows), [rows])
   const clientRows = useMemo(() => rows.filter((row) => matchesQuery(filters.q, row.client.name)), [rows, filters.q])
   const panels = useMemo(() => detailFrameworks(rows, filters.q), [rows, filters.q])
 
   const client = filters.client === 'all' ? null : data.clients.find((entry) => entry.id === filters.client)
+  const framework = frameworks.find((entry) => entry.value === filters.framework)
   const batch =
     data.batches.find((entry) => entry.batchId === filters.batch) ?? (data.batchCount === 1 ? data.batches[0] : undefined)
 
   return (
     <>
       <FilterBar
-        actions={<DownloadReportButton fileName={reportFileName(['assignments', client?.name, batch?.label])} />}
+        actions={<DownloadReportButton fileName={reportFileName(['assignments', client?.name, batch?.label, framework?.value])} />}
         onClear={isDirty ? clear : undefined}
       >
-        {data.batchCount > 1 ? (
-          <Select
-            label="Period"
-            icon="calendar"
-            value={filters.batch}
-            onChange={(value) => setFilter('batch', value)}
-            options={[
-              { value: 'all', label: 'All periods' },
-              ...data.batches.map((entry) => ({ value: entry.batchId, label: entry.label })),
-            ]}
-          />
-        ) : null}
+        <Select
+          label="Chakra"
+          icon="calendar"
+          value={filters.batch}
+          onChange={(value) => setFilter('batch', value)}
+          options={[
+            { value: 'all', label: 'All chakras' },
+            ...data.batches.map((entry) => ({ value: entry.batchId, label: entry.label })),
+          ]}
+        />
         <Select
           label="Client"
           icon="user"
@@ -60,6 +61,13 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
             { value: 'all', label: 'All clients' },
             ...data.clients.map((entry) => ({ value: entry.id, label: entry.name })),
           ]}
+        />
+        <Select
+          label="Framework"
+          icon="layers"
+          value={filters.framework}
+          onChange={(value) => setFilter('framework', value)}
+          options={[{ value: 'all', label: 'All frameworks' }, ...frameworks]}
         />
         <SearchInput
           label="Search"
@@ -71,7 +79,7 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <ScoreHeadlineCard
-          title={batch?.label ?? 'All periods'}
+          title={framework?.label ?? batch?.label ?? 'All chakras'}
           percent={totals.targetFillPct}
           grade={null}
           scored={totals.targetsSet}
