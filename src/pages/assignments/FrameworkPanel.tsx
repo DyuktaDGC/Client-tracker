@@ -17,7 +17,7 @@ const TONES: Record<PanelTone, { card: string; badge: string }> = {
 }
 
 const read = (value: number | null, unit: AssignmentQuestion['unit']) =>
-  value === null ? '—' : unit === 'percent' ? `${formatScore(value)}%` : formatScore(value)
+  value === null ? '' : unit === 'percent' ? `${formatScore(value)}%` : formatScore(value)
 
 export function FrameworkPanel({ framework, index }: { framework: AssignmentFramework; index: number }) {
   const tone: PanelTone = ORDER[index % ORDER.length] ?? 'brand'
@@ -58,13 +58,18 @@ export function FrameworkPanel({ framework, index }: { framework: AssignmentFram
               {question.no}
             </span>
             <p className="min-w-0 flex-1 text-sm leading-snug text-ink-soft">{question.text}</p>
-            <span className="w-14 rounded-lg bg-surface px-2 py-1 text-right text-sm font-bold tabular-nums">
+            <span
+              className={cn(
+                'w-14 rounded-lg px-2 py-1 text-right text-sm font-bold tabular-nums',
+                question.target === null ? '' : 'bg-surface',
+              )}
+            >
               {read(question.target, question.unit)}
             </span>
             <span
               className={cn(
                 'w-14 rounded-lg px-2 py-1 text-right text-sm font-bold tabular-nums',
-                question.done === null ? 'bg-surface/70 text-ink/40' : 'bg-good text-white',
+                question.done === null ? '' : 'bg-good text-white',
               )}
             >
               {read(question.done, question.unit)}
