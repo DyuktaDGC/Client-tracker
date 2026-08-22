@@ -7,7 +7,6 @@ import { reportFileName } from '../../lib/report'
 import { PerformanceChart } from '../../components/dashboard/PerformanceChart'
 import { ScoreHeadlineCard } from '../../components/dashboard/ScoreHeadlineCard'
 import { SpotlightCard } from '../../components/dashboard/SpotlightCard'
-import { TotalsCard } from '../../components/dashboard/TotalsCard'
 import { FrameworkTable } from './FrameworkTable'
 import { PerformerList } from './PerformerList'
 import { TrainingActivityTable } from './TrainingActivityTable'
@@ -169,16 +168,6 @@ export function DashboardPage() {
           />
         ) : null}
       </div>
-
-      {showComparisons ? (
-        <TotalsCard
-          stats={[
-            { label: 'Total clients', value: summary.clientCount, icon: 'user' },
-            { label: 'Total frameworks', value: frameworkAll.length, icon: 'layers' },
-            { label: 'Trainings & meetings', value: trainingAll.length, icon: 'calendar' },
-          ]}
-        />
-      ) : null}
 
       <div className="space-y-3">
         <PageHeading title="Framework breakdown" />
