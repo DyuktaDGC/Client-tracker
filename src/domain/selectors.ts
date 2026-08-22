@@ -23,8 +23,14 @@ const ACTIVITY_KEYS = Object.keys(ACTIVITY_LABELS) as ActivityKey[]
 const META_KEYS = Object.keys(META_LABELS) as MetaKey[]
 
 export interface ScoreSummary {
+  /** Sum of the item scores that were actually filled in. */
   scored: number
+  /** How many items were actually filled in — the denominator of the average. */
+  entered: number
+  /** ITEM_MAX for every entered item, so a percent reads as "out of 10". */
   possible: number
+  /** The headline reading: the mean of the entered item scores, on the 0-10 scale. */
+  average: number | null
   percent: number | null
   grade: Grade | null
 }
@@ -64,64 +70,81 @@ export interface Performer {
 
 interface Totals {
   scored: number
-  possible: number
+  entered: number
 }
 
-const summarise = (scored: number, possible: number): ScoreSummary => {
+/**
+ * Every item is scored the same way: the two attempts are added and halved,
+ * which the API already does, so each item arrives as a single 0-10 number.
+ * The average is then just the mean of those numbers over the items that were
+ * actually scored. Items nobody has filled in yet are left out entirely rather
+ * than counted as zero — an untouched framework is not a failed one.
+ */
+const summarise = (scored: number, entered: number): ScoreSummary => {
+  const possible = entered * ITEM_MAX
   const percent = percentOf(scored, possible)
-  return { scored: Math.round(scored * 100) / 100, possible, percent, grade: gradeOf(percent) }
+  return {
+    scored: Math.round(scored * 100) / 100,
+    entered,
+    possible,
+    average: entered > 0 ? Math.round((scored / entered) * 100) / 100 : null,
+    percent,
+    grade: gradeOf(percent),
+  }
 }
 
 function frameworkTotals(months: ClientMonth[]): Totals {
   let scored = 0
-  let possible = 0
+  let entered = 0
 
   for (const entry of months) {
     for (const framework of entry.frameworks) {
-      possible += framework.maxScore
-      if (framework.entered) scored += framework.score
+      if (!framework.entered) continue
+      scored += framework.score
+      entered += 1
     }
   }
 
-  return { scored, possible }
+  return { scored, entered }
 }
 
 function activityTotals(months: ClientMonth[]): Totals {
   let scored = 0
-  let possible = 0
+  let entered = 0
 
   for (const entry of months) {
     for (const key of ACTIVITY_KEYS) {
       const value = entry.activities[key]
       if (value === null || value === undefined) continue
       scored += value
-      possible += ITEM_MAX
+      entered += 1
     }
   }
 
-  return { scored, possible }
+  return { scored, entered }
 }
 
 function metaTotals(months: ClientMonth[]): Totals {
   let scored = 0
-  let possible = 0
+  let entered = 0
 
   for (const entry of months) {
     for (const key of META_KEYS) {
-      possible += ITEM_MAX
       const value = entry[key]
-      if (value !== null && value !== undefined) scored += value
+      if (value === null || value === undefined) continue
+      scored += value
+      entered += 1
     }
   }
 
-  return { scored, possible }
+  return { scored, entered }
 }
 
 export function summariseMonths(months: ClientMonth[]): ScoreSummary {
   const parts = [frameworkTotals(months), activityTotals(months), metaTotals(months)]
   return summarise(
     parts.reduce((total, part) => total + part.scored, 0),
-    parts.reduce((total, part) => total + part.possible, 0),
+    parts.reduce((total, part) => total + part.entered, 0),
   )
 }
 
@@ -158,20 +181,24 @@ export function programSummary(clients: Client[], month: number | null): Program
 }
 
 export function frameworkRollup(clients: Client[], month: number | null): BreakdownRow[] {
-  const buckets = new Map<string, { name: string; week: number; month: number; scored: number; possible: number }>()
+  const buckets = new Map<string, { name: string; week: number; month: number; scored: number; entered: number }>()
 
   for (const client of clients) {
     for (const entry of inScope(client, month)) {
       for (const framework of entry.frameworks) {
+        // The row exists as soon as the column does, so a framework nobody has
+        // reached yet still lists — it just reads "—" instead of 0%.
         const bucket = buckets.get(framework.code) ?? {
           name: framework.name,
           week: framework.week,
           month: entry.month,
           scored: 0,
-          possible: 0,
+          entered: 0,
         }
-        bucket.possible += framework.maxScore
-        if (framework.entered) bucket.scored += framework.score
+        if (framework.entered) {
+          bucket.scored += framework.score
+          bucket.entered += 1
+        }
         buckets.set(framework.code, bucket)
       }
     }
@@ -183,7 +210,7 @@ export function frameworkRollup(clients: Client[], month: number | null): Breakd
     week: bucket.week,
     month: bucket.month,
     kind: 'framework' as const,
-    ...summarise(bucket.scored, bucket.possible),
+    ...summarise(bucket.scored, bucket.entered),
   })).sort((a, b) => a.code.localeCompare(b.code, undefined, { numeric: true }))
 }
 
@@ -195,23 +222,19 @@ function optionalRollup<K extends string>(
   label: (key: K) => string,
   code: (key: K, index: number, current: number) => string,
   kind: RowKind,
-  blanksScoreZero: boolean,
 ): BreakdownRow[] {
   return monthsInScope(clients, month).flatMap((current) =>
     keys.map((key, index) => {
       let scored = 0
-      let possible = 0
+      let entered = 0
 
       for (const client of clients) {
         for (const entry of client.months) {
           if (entry.month !== current) continue
           const value = read(entry, key)
-          if (value === null || value === undefined) {
-            if (blanksScoreZero) possible += ITEM_MAX
-            continue
-          }
+          if (value === null || value === undefined) continue
           scored += value
-          possible += ITEM_MAX
+          entered += 1
         }
       }
 
@@ -221,7 +244,7 @@ function optionalRollup<K extends string>(
         week: null,
         month: current,
         kind,
-        ...summarise(scored, possible),
+        ...summarise(scored, entered),
       }
     }),
   )
@@ -236,7 +259,6 @@ export const activityRollup = (clients: Client[], month: number | null) =>
     (key) => ACTIVITY_LABELS[key],
     (key, index, current) => (key === 'strategicMeeting' ? `M${current}` : `T${(current - 1) * 3 + index + 1}`),
     'activity',
-    false,
   )
 
 export const metaRollup = (clients: Client[], month: number | null) =>
@@ -248,7 +270,6 @@ export const metaRollup = (clients: Client[], month: number | null) =>
     (key) => META_LABELS[key],
     (key, _index, current) => `${META_CODES[key]}${current}`,
     'meta',
-    true,
   )
 
 export function performanceTrend(clients: Client[], schema: TabSchema[]): TrendPoint[] {

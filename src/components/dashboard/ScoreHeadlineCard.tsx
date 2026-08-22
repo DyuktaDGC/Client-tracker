@@ -1,6 +1,6 @@
 import type { Grade } from '../../domain/scoring'
 import { cn } from '../../lib/cn'
-import { formatPercent } from '../../lib/format'
+import { formatPercent, formatScore } from '../../lib/format'
 import { Meter } from '../ui/Meter'
 
 const GRADE_TONE: Record<Grade, { card: string; value: string; chip: string }> = {
@@ -34,9 +34,19 @@ interface ScoreHeadlineCardProps {
   scored: number
   possible: number
   unit?: string
+  /** Mean of the scored items on the 0-10 scale. Shown instead of the raw totals. */
+  average?: number | null
 }
 
-export function ScoreHeadlineCard({ title, percent, grade, scored, possible, unit = 'points' }: ScoreHeadlineCardProps) {
+export function ScoreHeadlineCard({
+  title,
+  percent,
+  grade,
+  scored,
+  possible,
+  unit = 'points',
+  average,
+}: ScoreHeadlineCardProps) {
   const tone = grade ? GRADE_TONE[grade] : NEUTRAL
 
   return (
@@ -76,7 +86,13 @@ export function ScoreHeadlineCard({ title, percent, grade, scored, possible, uni
 
         <div className="mt-2 flex justify-between text-[11px] font-bold uppercase tracking-[0.06em] text-ink-soft">
           <span>
-            {scored} of {possible} {unit}
+            {average === undefined ? (
+              <>
+                {scored} of {possible} {unit}
+              </>
+            ) : (
+              <>Avg {formatScore(average)} of 10 · {scored} of {possible} {unit}</>
+            )}
           </span>
           <span>Target: 100%</span>
         </div>

@@ -157,6 +157,7 @@ export function DashboardPage() {
           grade={summary.grade}
           scored={summary.scored}
           possible={summary.possible}
+          average={summary.average}
         />
 
         {spotlight && spotlightSummary ? (
