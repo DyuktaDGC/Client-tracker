@@ -43,12 +43,12 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
         onClear={isDirty ? clear : undefined}
       >
         <Select
-          label="Chakra"
+          label="Batch"
           icon="calendar"
           value={filters.batch}
           onChange={(value) => setFilter('batch', value)}
           options={[
-            { value: 'all', label: 'All chakras' },
+            { value: 'all', label: 'All batches' },
             ...data.batches.map((entry) => ({ value: entry.batchId, label: entry.label })),
           ]}
         />
@@ -79,7 +79,7 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <ScoreHeadlineCard
-          title={framework?.label ?? batch?.label ?? 'All chakras'}
+          title={framework?.label ?? batch?.label ?? 'All batches'}
           percent={totals.targetFillPct}
           grade={null}
           scored={totals.targetsSet}
