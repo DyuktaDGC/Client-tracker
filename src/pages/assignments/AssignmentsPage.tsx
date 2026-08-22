@@ -8,7 +8,6 @@ import { periodLabel } from '../../lib/period'
 import { reportFileName } from '../../lib/report'
 import { ScoreHeadlineCard } from '../../components/dashboard/ScoreHeadlineCard'
 import { SpotlightCard } from '../../components/dashboard/SpotlightCard'
-import { TotalsCard } from '../../components/dashboard/TotalsCard'
 import { FilterBar } from '../../components/layout/FilterBar'
 import { PageHeading } from '../../components/layout/PageHeading'
 import { DownloadReportButton } from '../../components/ui/DownloadReportButton'
@@ -87,13 +86,6 @@ function AssignmentsView({ data }: { data: AssignmentsResponse }) {
         />
       </div>
 
-      <TotalsCard
-        stats={[
-          { label: 'Targets set', value: `${totals.targetsSet}/${totals.questionCount}`, icon: 'bolt', tone: 'brand' },
-          { label: 'Done', value: `${totals.doneSet}/${totals.questionCount}`, icon: 'check', tone: 'good' },
-        ]}
-      />
-
       {client ? (
         <div className="space-y-3">
           <PageHeading title="Framework detail" icon="bolt" />
@@ -128,7 +120,6 @@ export function AssignmentsPage() {
           <Skeleton className="h-56 w-full rounded-2xl" />
           <Skeleton className="h-56 w-full rounded-2xl" />
         </div>
-        <Skeleton className="h-24 w-full rounded-2xl" />
         <Skeleton className="h-80 w-full rounded-2xl" />
       </div>
     )
