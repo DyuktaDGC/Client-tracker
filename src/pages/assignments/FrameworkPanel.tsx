@@ -21,7 +21,7 @@ const read = (value: number | null, unit: AssignmentQuestion['unit']) =>
 
 export function FrameworkPanel({ framework, index }: { framework: AssignmentFramework; index: number }) {
   const tone: PanelTone = ORDER[index % ORDER.length] ?? 'brand'
-  const coverage = framework.questionCount > 0 ? (framework.targetsSet / framework.questionCount) * 100 : null
+  const completion = framework.questionCount > 0 ? (framework.doneSet / framework.questionCount) * 100 : null
 
   return (
     <section className={cn('card card-lift animate-rise flex min-w-0 flex-col gap-3 p-4 sm:p-5', TONES[tone].card)}>
@@ -40,10 +40,10 @@ export function FrameworkPanel({ framework, index }: { framework: AssignmentFram
             {framework.targetsSet}/{framework.questionCount} targets · {framework.doneSet} done
           </p>
         </div>
-        <span className="text-xl font-black tabular-nums">{formatPercent(coverage)}</span>
+        <span className="text-xl font-black tabular-nums">{formatPercent(completion)}</span>
       </header>
 
-      <Meter percent={coverage} label={`${framework.code} targets set`} className="bg-surface/70" />
+      <Meter percent={completion} label={`${framework.code} done`} className="bg-surface/70" />
 
       <div className="flex items-center gap-3 pt-1">
         <span className="flex-1" />
