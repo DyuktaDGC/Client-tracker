@@ -6,10 +6,10 @@ import { Icon } from './Icon'
 type Status = 'idle' | 'working' | 'done' | 'error'
 
 const LABELS: Record<Status, string> = {
-  idle: 'Download report',
+  idle: 'Download',
   working: 'Capturing…',
   done: 'Saved',
-  error: 'Retry download',
+  error: 'Retry',
 }
 
 interface DownloadReportButtonProps {
@@ -81,7 +81,7 @@ export function DownloadReportButton({ fileName, className }: DownloadReportButt
         aria-live="polite"
         title={message || `Save the whole page as ${fileName}`}
         className={cn(
-          'press group relative isolate inline-flex h-11 w-[12.5rem] shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border px-3 text-xs font-bold uppercase tracking-[0.06em] transition-colors duration-300',
+          'press group relative isolate inline-flex h-10 w-auto shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl border px-3 text-xs font-bold uppercase tracking-[0.06em] transition-colors duration-300 sm:h-11 sm:w-[10rem]',
           status === 'error'
             ? 'border-bad/40 bg-bad-soft text-bad'
             : status === 'done'

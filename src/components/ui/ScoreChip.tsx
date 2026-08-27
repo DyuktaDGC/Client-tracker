@@ -14,7 +14,7 @@ export function ScoreChip({ value }: { value: number | null }) {
   return (
     <span
       className={cn(
-        'inline-flex min-w-[3rem] justify-center rounded-lg border px-2 py-1 font-bold tabular-nums',
+        'inline-flex min-w-[2.5rem] justify-center rounded-lg border px-1.5 py-0.5 text-xs font-bold tabular-nums sm:min-w-[3rem] sm:px-2 sm:py-1 sm:text-sm',
         'transition-transform duration-200 ease-spring hover:scale-105',
         tone,
       )}

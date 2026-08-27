@@ -45,25 +45,25 @@ export function FrameworkPanel({ framework, index }: { framework: AssignmentFram
 
       <Meter percent={completion} label={`${framework.code} done`} className="bg-surface/70" />
 
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex items-center gap-2 pt-1 sm:gap-3">
         <span className="flex-1" />
-        <span className="label w-14 text-right">Target</span>
-        <span className="label w-14 text-right">Done</span>
+        <span className="label w-11 text-right sm:w-14">Target</span>
+        <span className="label w-11 text-right sm:w-14">Done</span>
       </div>
 
       <ul>
         {framework.questions.map((question) => (
-          <li key={question.qid} className="flex items-center gap-3 border-t border-line/70 py-2.5">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-surface/80 text-[11px] font-bold tabular-nums text-ink-soft">
+          <li key={question.qid} className="flex items-center gap-2 border-t border-line/70 py-2 sm:gap-3 sm:py-2.5">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-surface/80 text-[10px] font-bold tabular-nums text-ink-soft sm:h-6 sm:w-6 sm:text-[11px]">
               {question.no}
             </span>
-            <p className="min-w-0 flex-1 text-sm leading-snug text-ink-soft">{question.text}</p>
-            <span className="inline-flex h-7 w-14 shrink-0 items-center justify-end rounded-lg border border-line bg-surface px-2 text-sm font-bold tabular-nums">
+            <p className="min-w-0 flex-1 text-xs leading-snug text-ink-soft sm:text-sm">{question.text}</p>
+            <span className="inline-flex h-6 w-11 shrink-0 items-center justify-end rounded-lg border border-line bg-surface px-1.5 text-xs font-bold tabular-nums sm:h-7 sm:w-14 sm:px-2 sm:text-sm">
               {read(question.target, question.unit)}
             </span>
             <span
               className={cn(
-                'inline-flex h-7 w-14 shrink-0 items-center justify-end rounded-lg border px-2 text-sm font-bold tabular-nums',
+                'inline-flex h-6 w-11 shrink-0 items-center justify-end rounded-lg border px-1.5 text-xs font-bold tabular-nums sm:h-7 sm:w-14 sm:px-2 sm:text-sm',
                 question.done === null ? 'border-line bg-surface' : 'border-good bg-good text-white',
               )}
             >

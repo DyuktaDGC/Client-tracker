@@ -34,7 +34,7 @@ export function DataTable<T>({
   rowKey,
   rowClassName,
   maxHeight = '34rem',
-  minWidth = '52rem',
+  minWidth = '42rem',
   empty,
 }: DataTableProps<T>) {
   const filled = sections.filter((section) => section.rows.length > 0)
@@ -42,12 +42,12 @@ export function DataTable<T>({
 
   return (
     <div className="card animate-rise overflow-hidden">
-      <div className="overflow-auto" style={{ maxHeight }}>
+      <div className="group/table relative overflow-auto" style={{ maxHeight }}>
         <table className="w-full table-fixed border-collapse text-sm" style={{ minWidth }}>
           <thead className="sticky top-0 z-10 bg-surface">
             <tr className="border-b border-line">
               {columns.map((column) => (
-                <th key={column.key} scope="col" className={cn('bg-surface px-4 py-3', column.className)}>
+                <th key={column.key} scope="col" className={cn('bg-surface px-3 py-2.5 sm:px-4 sm:py-3', column.className)}>
                   <span className={cn('label block', alignOf(column.align))}>{column.header}</span>
                 </th>
               ))}
@@ -77,7 +77,7 @@ export function DataTable<T>({
                     <td
                       key={column.key}
                       className={cn(
-                        'px-4 py-3 align-middle transition-shadow duration-200',
+                        'px-3 py-2.5 align-middle transition-shadow duration-200 sm:px-4 sm:py-3',
                         alignOf(column.align),
                         column.className,
                       )}
@@ -90,6 +90,11 @@ export function DataTable<T>({
             </tbody>
           ))}
         </table>
+        <div
+          aria-hidden
+          className="pointer-events-none sticky bottom-0 right-0 h-6 w-12 -translate-x-1 bg-gradient-to-l from-surface/80 to-transparent opacity-0 transition-opacity duration-200 group-focus-within/table:opacity-100 sm:hidden"
+          style={{ boxShadow: '-8px 0 12px -4px rgba(0,0,0,0.08)' }}
+        />
       </div>
     </div>
   )

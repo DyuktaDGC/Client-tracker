@@ -21,21 +21,21 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
   }
 
   return (
-    <section className="card animate-rise p-6 sm:p-7">
+    <section className="card animate-rise p-4 sm:p-6 md:p-7">
       <div className="pt-7">
-        <div className="relative h-56">
+        <div className="relative h-44 sm:h-56">
           {GRID.map((line) => (
             <div
               key={line}
-              className="absolute inset-x-0 flex items-center gap-3"
+              className="absolute inset-x-0 flex items-center gap-2 sm:gap-3"
               style={{ bottom: `${line}%`, transform: 'translateY(50%)' }}
             >
-              <span className="w-7 shrink-0 text-right text-[11px] font-bold tabular-nums text-ink-faint">{line}</span>
+              <span className="w-6 shrink-0 text-right text-[10px] font-bold tabular-nums text-ink-faint sm:w-7 sm:text-[11px]">{line}</span>
               <span className={cn('h-px flex-1', line === 0 ? 'bg-line' : 'bg-line/60')} />
             </div>
           ))}
 
-          <ol className="absolute inset-y-0 left-12 right-2 flex items-end gap-3 sm:gap-4">
+          <ol className="absolute inset-y-0 left-9 right-1 flex items-end gap-2 sm:left-12 sm:gap-3 md:gap-4">
             {points.map((point) => {
               const dimmed = activeMonth !== null && activeMonth !== point.month
               const height = point.percent === null ? 0 : Math.max(point.percent, 1.5)
@@ -59,10 +59,10 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
                   {point.percent === null ? null : (
                     <p
                       className={cn(
-                        'absolute inset-x-0 text-center text-[11px] font-black tabular-nums',
+                        'absolute inset-x-0 text-center text-[10px] font-black tabular-nums sm:text-[11px]',
                         dimmed ? 'text-ink-faint' : 'text-ink',
                       )}
-                      style={{ bottom: `calc(${height}% + 0.4rem)` }}
+                      style={{ bottom: `calc(${height}% + 0.3rem)` }}
                     >
                       {formatPercent(point.percent)}
                     </p>
@@ -73,13 +73,13 @@ export function PerformanceChart({ points, activeMonth }: PerformanceChartProps)
           </ol>
         </div>
 
-        <ol className="mt-4 flex gap-3 pl-12 pr-2 sm:gap-4">
+        <ol className="mt-3 flex gap-2 pl-9 pr-1 sm:mt-4 sm:gap-3 sm:pl-12 sm:pr-2 md:gap-4">
           {points.map((point) => (
             <li
               key={point.month}
               title={point.label}
               className={cn(
-                'flex-1 truncate text-center text-[11px] font-bold uppercase tracking-[0.06em] transition-colors duration-300',
+                'flex-1 truncate text-center text-[10px] font-bold uppercase tracking-[0.06em] transition-colors duration-300 sm:text-[11px]',
                 activeMonth === point.month ? 'text-brand-dark' : 'text-ink-soft',
               )}
             >

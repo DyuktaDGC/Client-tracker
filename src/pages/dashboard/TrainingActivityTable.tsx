@@ -10,12 +10,13 @@ const columns: Column<ActivityRow>[] = [
   {
     key: 'client',
     header: 'Client',
-    render: (row) => <span className="block min-w-[9rem] font-semibold">{row.name}</span>,
+    render: (row) => <span className="block min-w-[7rem] font-semibold sm:min-w-[9rem]">{row.name}</span>,
   },
   ...KEYS.map<Column<ActivityRow>>((key) => ({
     key,
     header: ACTIVITY_LABELS[key].replace(' training', ''),
     align: 'center',
+    className: 'w-[4rem] sm:w-[5rem]',
     render: (row) => <ScoreChip value={row.values[key]} />,
   })),
 ]
@@ -28,7 +29,7 @@ export function TrainingActivityTable({ rows }: { rows: ActivityRow[] }) {
         sections={[{ key: 'clients', rows }]}
         rowKey={(row) => row.id}
         maxHeight="30rem"
-        minWidth="30rem"
+        minWidth="24rem"
         empty={<EmptyState title="No activity scores" description="No training columns were filled in for this filter." />}
       />
       <ul className="flex flex-wrap items-center gap-4 px-1 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-soft">

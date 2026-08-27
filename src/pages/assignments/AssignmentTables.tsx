@@ -16,7 +16,7 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
     {
       key: 'client',
       header: 'Client',
-      className: 'w-[38%]',
+      className: 'w-[35%] sm:w-[38%]',
       render: (row) => (
         <button
           type="button"
@@ -31,20 +31,20 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
       key: 'targets',
       header: 'Targets set',
       align: 'right',
-      className: 'w-[9rem]',
+      className: 'w-[7rem] sm:w-[9rem]',
       render: (row) => counter(row.batch.targetsSet, row.batch.questionCount, 'text-brand-dark'),
     },
     {
       key: 'done',
       header: 'Done',
       align: 'right',
-      className: 'w-[9rem]',
+      className: 'w-[7rem] sm:w-[9rem]',
       render: (row) => counter(row.batch.doneSet, row.batch.questionCount, row.batch.doneSet > 0 ? 'text-good' : undefined),
     },
     {
       key: 'coverage',
       header: 'Targets filled',
-      className: 'w-[20rem]',
+      className: 'hidden w-[14rem] sm:table-cell md:w-[20rem]',
       render: (row) => <Meter percent={row.batch.targetFillPct} label={`${row.client.name} targets set`} />,
     },
   ]
@@ -54,7 +54,7 @@ export function ClientTable({ rows, onSelect }: { rows: ScopeRow[]; onSelect: (i
       columns={columns}
       sections={[{ key: 'clients', rows }]}
       rowKey={(row) => `${row.client.id}-${row.batch.batchId}`}
-      minWidth="44rem"
+      minWidth="32rem"
       maxHeight="38rem"
       empty={
         <EmptyState
